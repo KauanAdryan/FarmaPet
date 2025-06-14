@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tela cadastro remédio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="cadastros.css" />
+</head>
+<body id="CadastroRemedio">
+<header>
+  <div class="header-left">
+    <a href="telaInicial.html" class="home-icon">🏠</a>
+    <div class="menu-cadastros">
+      <button class="btn-cadastros">Cadastros</button>
+      <ul class="dropdown-cadastros">
+        <li><a href="CadastroCliente.html">Cadastro Cliente</a></li>
+        <li><a href="CadastroRemedio.html">Cadastro Remédio</a></li>
+        <li><a href="CadastroPet.html">Cadastro Pet</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="user-icon">👤</div>
+</header>
+
+  <main>
+    <form class="form-cadastro">
+      <h2>Preencha as informações</h2>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="nome">Nome:</label>
+          <input type="text" id="nome" />
+        </div>
+        <div class="input-group">
+          <label for="receita">É obrigatório o uso de receita?</label>
+          <select id="receita">
+            <option value="">Selecione</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="principio">Princípio ativo:</label>
+          <input type="text" id="principio" />
+        </div>
+        <div class="input-group">
+          <label for="peso">Peso indicado:</label>
+          <input type="text" id="peso" />
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="dosagem">Dosagem:</label>
+          <input type="text" id="dosagem" />
+        </div>
+        <div class="input-group">
+          <label for="idade">Idade indicada:</label>
+          <input type="text" id="idade" />
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="especie">Espécie indicada:</label>
+          <input type="text" id="especie" />
+        </div>
+        <div class="input-group">
+          <label for="uso">Uso interno ou externo:</label>
+          <select id="uso">
+            <option value="">Selecione</option>
+            <option value="interno">Interno</option>
+            <option value="externo">Externo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="validade">Data de validade:</label>
+          <input type="date" id="validade" />
+        </div>
+        <div class="input-group">
+          <label for="ativo">Produto ativo:</label>
+          <select id="ativo">
+            <option value="">Selecione</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-cadastrar">Cadastrar</button>
+    </form>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
