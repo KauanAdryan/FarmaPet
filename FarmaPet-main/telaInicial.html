@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/telaInicial.css">
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <a href="telaInicial.html" class="home-icon">🏠</a>
+    <div class="menu-cadastros">
+      <button class="btn-cadastros">Cadastros</button>
+      <ul class="dropdown-cadastros">
+        <li><a href="CadastroCliente.html">Cadastro Cliente</a></li>
+        <li><a href="CadastroRemedio.html">Cadastro Remédio</a></li>
+        <li><a href="CadastroPet.html">Cadastro Pet</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="user-icon">👤</div>
+</header>
+  <div class="search-container">
+    <input type="text" placeholder="Buscar..." />
+    <button>🔍</button>
+  </div>
+  <div id="gridMedicamentos"></div>
+  </div>
+  <div class="fixed-buttons">
+    <div class="left-buttons">
+      <button class="add-lot">📦 Adicionar em lote</button>
+      <button class="remove-lot">🗑️ Remover em lote</button>
+    </div>
+<div class="new-register">
+  <a href="CadastroRemedio.html" class="btn-cadastrar">
+    <i class="fas fa-plus"></i>➕ Cadastrar novo
+  </a>
+</div>
+      </div>
+    </div>
+  </div>
+  <div id="message-container"></div>
+  <script src="js/script.js"></script>
+</body>
