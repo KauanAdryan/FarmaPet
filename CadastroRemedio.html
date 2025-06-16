@@ -3,100 +3,137 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tela cadastro remédio</title>
+  <title>Cadastro de Remédio</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/cadastros.css" />
 </head>
 <body id="CadastroRemedio">
-<header>
-  <div class="header-left">
-    <a href="telaInicial.html" class="home-icon">🏠</a>
-    <div class="menu-cadastros">
-      <button class="btn-cadastros">Cadastros</button>
-      <ul class="dropdown-cadastros">
-        <li><a href="CadastroCliente.html">Cadastro Cliente</a></li>
-        <li><a href="CadastroRemedio.html">Cadastro Remédio</a></li>
-        <li><a href="CadastroPet.html">Cadastro Pet</a></li>
-      </ul>
+  <header>
+    <div class="header-left">
+      <a href="telaInicial.html" class="home-icon" aria-label="Página Inicial">🏠</a>
+
+      <nav class="menu-cadastros" aria-label="Menu de Cadastros">
+        <button class="btn-cadastros" aria-haspopup="true" aria-expanded="false">Cadastros</button>
+        <ul class="dropdown-cadastros" role="menu" hidden>
+          <li role="none"><a href="CadastroCliente.html" role="menuitem">Cadastro Cliente</a></li>
+          <li role="none"><a href="CadastroRemedio.html" role="menuitem">Cadastro Remédio</a></li>
+          <li role="none"><a href="CadastroPet.html" role="menuitem">Cadastro Pet</a></li>
+        </ul>
+      </nav>
     </div>
-  </div>
-  <div class="user-icon">👤</div>
-</header>
+
+    <button class="user-icon" aria-label="Perfil do Usuário">👤</button>
+  </header>
 
   <main>
-    <form class="form-cadastro">
+    <form id="medicamentoForm" class="form-cadastro" enctype="multipart/form-data" novalidate>
       <h2>Preencha as informações</h2>
 
       <div class="input-row">
         <div class="input-group">
           <label for="nome">Nome:</label>
-          <input type="text" id="nome" />
+          <input type="text" id="nome" name="nome" required />
         </div>
         <div class="input-group">
-          <label for="receita">É obrigatório o uso de receita?</label>
-          <select id="receita">
-            <option value="">Selecione</option>
-            <option value="sim">Sim</option>
-            <option value="nao">Não</option>
+          <label for="receita_obrigatoria">É obrigatório o uso de receita?</label>
+          <select id="receita_obrigatoria" name="receita_obrigatoria" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="true">Sim</option>
+            <option value="false">Não</option>
           </select>
         </div>
       </div>
 
       <div class="input-row">
         <div class="input-group">
-          <label for="principio">Princípio ativo:</label>
-          <input type="text" id="principio" />
+          <label for="principio_ativo">Princípio ativo:</label>
+          <input type="text" id="principio_ativo" name="principio_ativo" required />
         </div>
         <div class="input-group">
-          <label for="peso">Peso indicado:</label>
-          <input type="text" id="peso" />
+          <label for="peso_indicado">Peso indicado (kg):</label>
+          <input type="number" step="0.01" id="peso_indicado" name="peso_indicado" min="0" />
         </div>
       </div>
 
       <div class="input-row">
         <div class="input-group">
           <label for="dosagem">Dosagem:</label>
-          <input type="text" id="dosagem" />
+          <input type="text" id="dosagem" name="dosagem" required />
         </div>
         <div class="input-group">
-          <label for="idade">Idade indicada:</label>
-          <input type="text" id="idade" />
+          <label for="idade_indicada">Idade indicada (anos):</label>
+          <input type="number" id="idade_indicada" name="idade_indicada" min="0" />
         </div>
       </div>
 
       <div class="input-row">
         <div class="input-group">
-          <label for="especie">Espécie indicada:</label>
-          <input type="text" id="especie" />
+          <label for="especie_indicada">Espécie indicada:</label>
+          <input type="text" id="especie_indicada" name="especie_indicada" />
         </div>
         <div class="input-group">
-          <label for="uso">Uso interno ou externo:</label>
-          <select id="uso">
-            <option value="">Selecione</option>
-            <option value="interno">Interno</option>
-            <option value="externo">Externo</option>
+          <label for="tipo_uso">Uso interno ou externo:</label>
+          <select id="tipo_uso" name="tipo_uso" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="INTERNO">Interno</option>
+            <option value="EXTERNO">Externo</option>
           </select>
         </div>
       </div>
 
       <div class="input-row">
         <div class="input-group">
-          <label for="validade">Data de validade:</label>
-          <input type="date" id="validade" />
+          <label for="data_validade">Data de validade:</label>
+          <input type="date" id="data_validade" name="data_validade" required />
         </div>
         <div class="input-group">
-          <label for="ativo">Produto ativo:</label>
-          <select id="ativo">
-            <option value="">Selecione</option>
-            <option value="sim">Sim</option>
-            <option value="nao">Não</option>
+          <label for="medicamentoativo">Produto ativo:</label>
+          <select id="medicamentoativo" name="medicamentoativo" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Ativo">Sim</option>
+            <option value="Inativo">Não</option>
           </select>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group file-upload">
+          <label for="foto">Foto do medicamento:</label>
+          <input type="file" id="foto" name="foto" accept="image/*" />
+          <div id="photoPreview" aria-live="polite" aria-atomic="true" style="margin-top:10px; font-size: 2rem;">📷</div>
         </div>
       </div>
 
       <button type="submit" class="btn-cadastrar">Cadastrar</button>
     </form>
   </main>
-  <script src="js/script.js"></script>
+
+  <script src="js/scriptCadastros.js"></script>
+  <script>
+    // Script para toggle dropdown menu
+    const btnCadastros = document.querySelector('.btn-cadastros');
+    const dropdown = document.querySelector('.dropdown-cadastros');
+
+    btnCadastros.addEventListener('click', () => {
+      const expanded = btnCadastros.getAttribute('aria-expanded') === 'true';
+      btnCadastros.setAttribute('aria-expanded', !expanded);
+      if (!expanded) {
+        dropdown.removeAttribute('hidden');
+        dropdown.classList.add('show');
+      } else {
+        dropdown.setAttribute('hidden', '');
+        dropdown.classList.remove('show');
+      }
+    });
+
+    // Fecha dropdown ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!btnCadastros.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.setAttribute('hidden', '');
+        dropdown.classList.remove('show');
+        btnCadastros.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
 </body>
 </html>

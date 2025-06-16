@@ -5,6 +5,21 @@ body {
   color: #000;
 }
 
+/* Header e Navegação */
+header {
+  background-color: #6df0b1;
+  display: flex;
+  justify-content: space-between; /* Espaço entre itens esquerda e direita */
+  align-items: center;
+  padding: 10px 30px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .home-icon {
   display: inline-block;
   margin-right: 20px;
@@ -19,20 +34,7 @@ body {
   color: #555;
 }
 
-header {
-  background-color: #6df0b1;
-  display: flex;
-  justify-content: space-between; /* Espaço entre os itens esquerda e direita */
-  align-items: center;
-  padding: 10px 30px;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
+/* Menu Cadastros */
 .menu-cadastros {
   position: relative;
   display: inline-block;
@@ -43,6 +45,20 @@ header {
   border: none;
   font-size: 18px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  transform-origin: center;
+  color: #000;
+  user-select: none;
+}
+
+.btn-cadastros::after {
+  content: ' ▼';
+  font-size: 0.8em;
+}
+
+.btn-cadastros:hover {
+  transform: scale(1.05);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .dropdown-cadastros {
@@ -58,14 +74,24 @@ header {
   list-style: none;
   min-width: 180px;
   z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.dropdown-cadastros.show {
+  display: block;
 }
 
 .dropdown-cadastros li {
   border-bottom: 1px solid #eee;
+  transition: all 0.2s ease;
 }
 
 .dropdown-cadastros li:last-child {
   border-bottom: none;
+}
+
+.dropdown-cadastros li:hover {
+  transform: translateX(5px);
 }
 
 .dropdown-cadastros li a {
@@ -81,23 +107,13 @@ header {
   transform: translateX(5px);
 }
 
-/* Adiciona uma seta indicativa */
-.btn-cadastros::after {
-  content: ' ▼';
-  font-size: 0.8em;
-}
-
-/* Estilo quando o dropdown está aberto */
-.dropdown-cadastros.show {
-  display: block;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
+/* Animação fadeIn do dropdown */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-/* Ícone usuário */
+
+/* Ícone Usuário */
 .user-icon {
   width: 50px;
   height: 50px;
@@ -108,6 +124,12 @@ header {
   align-items: center;
   font-size: 24px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.user-icon:hover {
+  transform: rotate(15deg) scale(1.1);
+  background-color: #6a6a6a8c;
 }
 
 /* Main */
@@ -117,8 +139,8 @@ main {
   justify-content: center;
 }
 
-/* Formulário */
-.form-cadastro {
+/* Formulários */
+.form-cadastro, .form-remedio {
   background-color: #fff;
   border: 1px solid #777;
   border-radius: 6px;
@@ -127,22 +149,7 @@ main {
   box-sizing: border-box;
 }
 
-.form-cadastro h2 {
-  text-align: center;
-  font-weight: 600;
-  margin-bottom: 25px;
-}
-
-.form-remedio {
-  background-color: #fff;
-  border: 1px solid #777;
-  border-radius: 6px;
-  padding: 25px 30px;
-  width: 600px;
-  box-sizing: border-box;
-}
-
-.form-remedio h2 {
+.form-cadastro h2, .form-remedio h2 {
   text-align: center;
   font-weight: 600;
   margin-bottom: 25px;
@@ -176,6 +183,7 @@ main {
   width: 100%;
 }
 
+/* Botão Cadastrar */
 .btn-cadastrar {
   margin-top: 25px;
   background-color: #2ffb89;
@@ -189,40 +197,13 @@ main {
   font-size: 18px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.4s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-cadastrar:hover {
   background-color: #26d877;
-}
-
-/* Adicione estas regras ao final do arquivo */
-
-/* Animação para o botão Cadastros ▼ */
-.btn-cadastros {
-  transition: all 0.3s ease;
-  transform-origin: center;
-}
-
-.btn-cadastros:hover {
-  transform: scale(1.05);
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* Animação para os itens do dropdown */
-.dropdown-cadastros li {
-  transition: all 0.2s ease;
-}
-
-.dropdown-cadastros li:hover {
-  transform: translateX(5px);
-}
-
-/* Animação para o botão de cadastrar */
-.btn-cadastrar {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s ease;
 }
 
 .btn-cadastrar::after {
@@ -244,17 +225,7 @@ main {
   transform: scale(0.95);
 }
 
-/* Animação para o ícone de usuário */
-.user-icon {
-  transition: all 0.3s ease;
-}
-
-.user-icon:hover {
-  transform: rotate(15deg) scale(1.1);
-  background-color: #6a6a6a8c;
-}
-
-/* Estilos para mensagens */
+/* Mensagens de alerta */
 .alert {
   position: fixed;
   top: 20px;
@@ -292,7 +263,7 @@ main {
   to { transform: rotate(360deg); }
 }
 
-/* Estilos para seções na tela inicial */
+/* Seções da tela inicial */
 .section-header {
   grid-column: 1 / -1;
   margin: 20px 0 10px;
@@ -306,4 +277,24 @@ main {
   padding: 20px;
   font-style: italic;
   color: #666;
+}
+
+/* Esconde campo estoque */
+#quantidade_estoque {
+  display: none;
+}
+
+/* Preview da foto */
+#photoPreview {
+  max-width: 180px;
+  max-height: 180px;
+  border-radius: 10px;
+  box-shadow: 0 3px 7px rgba(0,0,0,0.15);
+  overflow: hidden;
+}
+
+#photoPreview img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
