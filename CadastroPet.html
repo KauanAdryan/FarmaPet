@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tela Cadastro Pet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/cadastros.css" />
+</head>
+<body id="CadastroPet">
+<header>
+  <div class="header-left">
+    <a href="telaInicial.html" class="home-icon">🏠</a>
+    <div class="menu-cadastros">
+      <button class="btn-cadastros">Cadastros</button>
+      <ul class="dropdown-cadastros">
+        <li><a href="CadastroCliente.html">Cadastro Cliente</a></li>
+        <li><a href="CadastroRemedio.html">Cadastro Remédio</a></li>
+        <li><a href="CadastroPet.html">Cadastro Pet</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="user-icon">👤</div>
+</header>
+
+  <main>
+    <form class="form-cadastro">
+      <h2>Preencha as informações do Pet</h2>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="nome">Nome do Pet:</label>
+          <input type="text" placeholder="Digite o nome do pet" id="nome" required />
+        </div>
+        <div class="input-group">
+          <label for="especie">Espécie:</label>
+          <input type="text" placeholder="Digite a espécie do pet" id="especie" required />
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="raca">Raça:</label>
+          <input type="text" id="raca" placeholder="Digite a raça do pet" required />
+        </div>
+        <div class="input-group">
+          <label for="idade">Idade (anos):</label>
+          <input type="number" id="idade" min="0" max="30" placeholder="Digite a idade do pet" required />
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="peso">Peso (kg):</label>
+          <input type="number" id="peso" step="0.1" min="0" max="100" placeholder="Digite o peso do pet" required />
+        </div>
+        <div class="input-group">
+          <label for="dono">Dono:</label>
+          <select id="dono" required>
+            <option value="" disabled selected>Selecione o dono</option>
+            <!-- Os clientes serão carregados aqui via JavaScript -->
+          </select>
+      </div>
+      </div>
+
+      <button type="submit" class="btn-cadastrar">Cadastrar Pet</button>
+    </form>
+  </main>
+  <script src="js/scriptCadastros.js"></script>
+  <script>
+    // Script para toggle dropdown menu
+    const btnCadastros = document.querySelector('.btn-cadastros');
+    const dropdown = document.querySelector('.dropdown-cadastros');
+
+    btnCadastros.addEventListener('click', () => {
+      const expanded = btnCadastros.getAttribute('aria-expanded') === 'true';
+      btnCadastros.setAttribute('aria-expanded', !expanded);
+      if (!expanded) {
+        dropdown.removeAttribute('hidden');
+        dropdown.classList.add('show');
+      } else {
+        dropdown.setAttribute('hidden', '');
+        dropdown.classList.remove('show');
+      }
+    });
+
+    // Fecha dropdown ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!btnCadastros.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.setAttribute('hidden', '');
+        dropdown.classList.remove('show');
+        btnCadastros.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+</body>
+</html>

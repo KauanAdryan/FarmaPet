@@ -27,6 +27,8 @@ header {
   cursor: pointer;
   transition: all 0.3s ease;
   color: #000;
+  line-height: 0; /* Remove o espaço abaixo do emoji */
+  vertical-align: middle; /* Mantém o alinhamento correto */
 }
 
 .home-icon:hover {

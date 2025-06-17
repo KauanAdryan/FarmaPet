@@ -1,29 +1,30 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Farmácia Pet - Gerenciamento de Medicamentos</title>
   <meta name="description" content="Sistema de gerenciamento de medicamentos para pets">
-  
+
   <!-- Fontes e ícones -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  
+
   <!-- Estilos -->
   <link rel="stylesheet" href="css/telaInicial.css">
 </head>
+
 <body>
   <header class="header">
     <div class="header-left">
       <a href="telaInicial.html" class="home-icon" aria-label="Página inicial">🏠</a>
-      
+
       <nav class="menu-cadastros">
         <button class="btn-cadastros" aria-expanded="false" aria-controls="dropdown-cadastros">
           <span>Cadastros</span>
-          <i class="fas fa-chevron-down"></i>
         </button>
-        
+
         <ul id="dropdown-cadastros" class="dropdown-cadastros" role="menu">
           <li role="none"><a href="CadastroCliente.html" role="menuitem">Cadastro Cliente</a></li>
           <li role="none"><a href="CadastroRemedio.html" role="menuitem">Cadastro Remédio</a></li>
@@ -31,49 +32,49 @@
         </ul>
       </nav>
     </div>
-    
+
     <button class="user-icon" aria-label="Perfil do usuário">👤</button>
   </header>
- 
+
   <main class="main-content">
     <section class="search-section">
       <div class="search-container">
         <div class="search-input-group">
-          <input type="text" id="searchInput" placeholder="Buscar por nome, princípio ativo ou espécie..." 
-                 aria-label="Buscar medicamentos">
+          <input type="text" id="searchInput" placeholder="Buscar por nome, princípio ativo ou espécie..."
+            aria-label="Buscar medicamentos">
           <button id="searchButton" aria-label="Pesquisar">
             <i class="fas fa-search"></i>
           </button>
         </div>
-        
+
         <div class="filter-group">
           <select id="statusFilter" class="status-filter" aria-label="Filtrar por status">
             <option value="all">Todos os status</option>
             <option value="Ativo">Ativo</option>
             <option value="Inativo">Inativo</option>
           </select>
-          
+
           <button id="clearFilters" class="clear-filters" aria-label="Limpar filtros">
             <i class="fas fa-times"></i> Limpar
           </button>
         </div>
       </div>
     </section>
- 
+
     <section class="medicamentos-grid">
       <div id="gridMedicamentos" role="grid" aria-label="Lista de medicamentos"></div>
     </section>
- 
+
     <div class="fixed-buttons">
       <div class="left-buttons">
         <button id="btnAdicionarLote" class="add-lot" aria-label="Adicionar medicamentos em lote">
           <i class="fas fa-boxes"></i> Adicionar em lote
         </button>
-        <button class="remove-lot" aria-label="Remover medicamentos em lote">
+        <button id="btnRemoverLote" class="remove-lot" aria-label="Remover medicamentos em lote">
           <i class="fas fa-trash-alt"></i> Remover em lote
         </button>
       </div>
-      
+
       <div class="new-register">
         <a href="CadastroRemedio.html" class="btn-cadastrar" aria-label="Cadastrar novo medicamento">
           <i class="fas fa-plus"></i> Cadastrar novo
@@ -81,21 +82,22 @@
       </div>
     </div>
   </main>
- 
+
   <!-- Modal de detalhes -->
-  <div id="medicamentoModal" class="modal" role="dialog" aria-modal="false" aria-labelledby="modalTitle" aria-hidden="true">
+  <div id="medicamentoModal" class="modal" role="dialog" aria-modal="false" aria-labelledby="modalTitle"
+    aria-hidden="true">
     <div class="modal-content">
       <button class="close-modal" aria-label="Fechar modal">&times;</button>
-      
+
       <div class="modal-header">
         <h2 id="modalTitle">Detalhes do Medicamento</h2>
       </div>
-      
+
       <div class="modal-body">
         <div id="modalPhotoPreview" class="modal-photo-preview" aria-hidden="true">
           <i class="fas fa-pills"></i>
         </div>
-        
+
         <div class="modal-info">
           <div class="info-row">
             <strong>Nome:</strong>
@@ -145,41 +147,42 @@
       </div>
     </div>
   </div>
- 
+
   <!-- Modal de edição -->
-  <div id="editarMedicamentoModal" class="modal" role="dialog" aria-modal="false" aria-labelledby="editarModalTitle" aria-hidden="true">
+  <div id="editarMedicamentoModal" class="modal" role="dialog" aria-modal="false" aria-labelledby="editarModalTitle"
+    aria-hidden="true">
     <div class="modal-content">
       <button class="close-modal" aria-label="Fechar modal">&times;</button>
-      
+
       <div class="modal-header">
         <h2 id="editarModalTitle">Editar Medicamento</h2>
       </div>
-      
+
       <div class="modal-body">
         <form id="editarMedicamentoForm" novalidate>
           <input type="hidden" id="editarId" name="id">
-          
+
           <div class="form-grid">
             <div class="form-group">
               <label for="editarNome">Nome:</label>
               <input type="text" id="editarNome" name="nome" required aria-required="true">
             </div>
-            
+
             <div class="form-group">
               <label for="editarPrincipioAtivo">Princípio Ativo:</label>
               <input type="text" id="editarPrincipioAtivo" name="principioAtivo" required aria-required="true">
             </div>
-            
+
             <div class="form-group">
               <label for="editarDosagem">Dosagem:</label>
               <input type="text" id="editarDosagem" name="dosagem" required aria-required="true">
             </div>
-            
+
             <div class="form-group">
               <label for="editarEspecie">Espécie Indicada:</label>
               <input type="text" id="editarEspecie" name="especieIndicada" required aria-required="true">
             </div>
-            
+
             <div class="form-group">
               <label for="editarTipoUso">Tipo de Uso:</label>
               <select id="editarTipoUso" name="tipoUso" required aria-required="true">
@@ -187,27 +190,29 @@
                 <option value="EXTERNO">Uso Externo</option>
               </select>
             </div>
-            
+
             <div class="form-group">
               <label for="editarValidade">Data de Validade:</label>
               <input type="date" id="editarValidade" name="dataValidade" required aria-required="true">
             </div>
-            
+
             <div class="form-group">
               <label for="editarIdade">Idade Indicada:</label>
               <input type="number" id="editarIdade" name="idadeIndicada" min="0" aria-label="Idade indicada em meses">
             </div>
-            
+
             <div class="form-group">
               <label for="editarPeso">Peso Indicado (kg):</label>
-              <input type="number" step="0.1" id="editarPeso" name="pesoIndicado" min="0" aria-label="Peso indicado em quilogramas">
+              <input type="number" step="0.1" id="editarPeso" name="pesoIndicado" min="0"
+                aria-label="Peso indicado em quilogramas">
             </div>
-            
+
             <div class="form-group">
               <label for="editarQuantidadeEstoque">Quantidade em Estoque:</label>
-              <input type="number" id="editarQuantidadeEstoque" name="quantidadeEstoque" required min="0" aria-required="true">
+              <input type="number" id="editarQuantidadeEstoque" name="quantidadeEstoque" required min="0"
+                aria-required="true">
             </div>
-            
+
             <div class="form-group">
               <label for="editarReceita">Receita Obrigatória:</label>
               <select id="editarReceita" name="receitaObrigatoria" required aria-required="true">
@@ -215,7 +220,7 @@
                 <option value="true">Sim</option>
               </select>
             </div>
-            
+
             <div class="form-group">
               <label for="editarStatus">Status:</label>
               <select id="editarStatus" name="medicamentoativo" required aria-required="true">
@@ -223,17 +228,18 @@
                 <option value="Inativo">Inativo</option>
               </select>
             </div>
-            
+
             <div class="form-group full-width">
               <label for="editarFoto">Foto:</label>
-              <input type="file" id="editarFoto" name="foto" accept="image/jpeg, image/png, image/gif" aria-label="Selecionar imagem do medicamento">
+              <input type="file" id="editarFoto" name="foto" accept="image/jpeg, image/png, image/gif"
+                aria-label="Selecionar imagem do medicamento">
               <small class="form-text">Formatos aceitos: JPEG, PNG, GIF (máx. 10MB)</small>
               <div id="editarPhotoPreview" class="photo-preview" aria-hidden="true">
                 <i class="fas fa-pills"></i>
               </div>
             </div>
           </div>
-          
+
           <div class="form-actions">
             <button type="submit" class="btn-salvar">
               <i class="fas fa-save"></i> Salvar Alterações
@@ -248,15 +254,16 @@
   </div>
 
   <!-- Modal Adicionar em Lote -->
-  <div id="modalLote" class="modal-lote hidden" role="dialog" aria-modal="false" aria-labelledby="modalLoteTitle" aria-hidden="true">
+  <div id="modalLote" class="modal-lote hidden" role="dialog" aria-modal="false" aria-labelledby="modalLoteTitle"
+    aria-hidden="true">
     <div class="modal-lote-content">
       <button class="modal-lote-close" aria-label="Fechar modal">×</button>
-      
+
       <h2 id="modalLoteTitle">Adicionar Medicamento em Lote</h2>
 
       <div class="search-group">
-        <input type="text" id="pesquisaMedicamento" placeholder="Pesquisar medicamento..."
-          class="input-pesquisa" aria-label="Pesquisar medicamento">
+        <input type="text" id="pesquisaMedicamento" placeholder="Pesquisar medicamento..." class="input-pesquisa"
+          aria-label="Pesquisar medicamento">
         <i class="fas fa-search search-icon"></i>
       </div>
 
@@ -269,9 +276,33 @@
       </button>
     </div>
   </div>
- 
+
+  <!-- Modal Remover em Lote -->
+<div id="modalRemoverLote" class="modal-lote hidden" role="dialog" aria-modal="false" aria-labelledby="modalRemoverLoteTitle" aria-hidden="true">
+  <div class="modal-lote-content">
+    <button class="modal-lote-close" aria-label="Fechar modal">×</button>
+    
+    <h2 id="modalRemoverLoteTitle">Remover Medicamento em Lote</h2>
+
+    <div class="search-group">
+      <input type="text" id="pesquisaMedicamentoRemover" placeholder="Pesquisar medicamento..."
+        class="input-pesquisa" aria-label="Pesquisar medicamento">
+      <i class="fas fa-search search-icon"></i>
+    </div>
+
+    <div id="listaMedicamentosRemoverLote" class="lista-medicamentos-lote" role="listbox" aria-multiselectable="true">
+      <!-- Será preenchido via JS -->
+    </div>
+
+    <button id="btnRemoverLote1" class="btn-remover">
+      <i class="fas fa-trash-alt"></i> Remover
+    </button>
+  </div>
+</div>
+
   <div id="message-container" role="status" aria-live="polite"></div>
- 
+
   <script src="js/script.js"></script>
 </body>
+
 </html>

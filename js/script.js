@@ -14,7 +14,7 @@ let currentModal = null;
 let medicamentosLista = [];
 
 // Inicialização principal
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   initModals();
   initDropdownMenu();
   setupEventListeners();
@@ -23,16 +23,16 @@ document.addEventListener('DOMContentLoaded', function() {
   // Configurar preview de imagem
   const fileInput = getElement('#editarFoto');
   if (fileInput) {
-    fileInput.addEventListener('change', function(e) {
+    fileInput.addEventListener('change', function (e) {
       const file = e.target.files[0];
       const preview = getElement('#editarPhotoPreview');
-      
+
       if (file) {
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
           preview.innerHTML = `<img src="${event.target.result}" class="preview-image" onerror="this.onerror=null;this.parentElement.innerHTML='<i class=\"fas fa-pills\"></i>'">`;
         };
-        reader.onerror = function() {
+        reader.onerror = function () {
           preview.innerHTML = '<i class="fas fa-pills"></i>';
         };
         reader.readAsDataURL(file);
@@ -51,10 +51,10 @@ function initModals() {
     currentModal = {
       element: detalhesModal,
       closeBtn: getElement('.close-modal', detalhesModal),
-      open: function(medicamento) {
+      open: function (medicamento) {
         showMedicamentoDetails(medicamento);
       },
-      close: function() {
+      close: function () {
         this.element.style.display = 'none';
       }
     };
@@ -62,12 +62,14 @@ function initModals() {
     if (currentModal.closeBtn) {
       currentModal.closeBtn.onclick = () => currentModal.close();
     }
-    
-    detalhesModal.onclick = function(e) {
+
+    detalhesModal.onclick = function (e) {
       if (e.target === detalhesModal) {
         currentModal.close();
       }
     };
+    initRemoverLoteModal(); // Adicione no final da função
+
   }
 
   // Modal de edição
@@ -75,12 +77,12 @@ function initModals() {
   if (editarModal) {
     const closeBtn = getElement('.close-modal', editarModal);
     if (closeBtn) {
-      closeBtn.onclick = function() {
+      closeBtn.onclick = function () {
         editarModal.style.display = 'none';
       };
     }
-   
-    editarModal.onclick = function(e) {
+
+    editarModal.onclick = function (e) {
       if (e.target === editarModal) {
         editarModal.style.display = 'none';
       }
@@ -89,7 +91,7 @@ function initModals() {
     // Botão cancelar
     const cancelBtn = getElement('.btn-cancelar', editarModal);
     if (cancelBtn) {
-      cancelBtn.addEventListener('click', function() {
+      cancelBtn.addEventListener('click', function () {
         editarModal.style.display = 'none';
       });
     }
@@ -100,7 +102,7 @@ function initModals() {
   if (loteModal) {
     const closeBtn = getElement('.modal-lote-close', loteModal);
     if (closeBtn) {
-      closeBtn.onclick = function() {
+      closeBtn.onclick = function () {
         loteModal.classList.add('hidden');
       };
     }
@@ -123,7 +125,7 @@ function setupEventListeners() {
   // Formulário de edição
   const editForm = getElement('#editarMedicamentoForm');
   if (editForm) {
-    editForm.addEventListener('submit', function(e) {
+    editForm.addEventListener('submit', function (e) {
       e.preventDefault();
       handleEditSubmit(e).catch(error => {
         console.error('Erro no submit:', error);
@@ -139,7 +141,7 @@ function setupEventListeners() {
 
   const salvarLoteButton = getElement('#btnSalvarLote');
   if (salvarLoteButton) {
-    salvarLoteButton.addEventListener('click', function() {
+    salvarLoteButton.addEventListener('click', function () {
       salvarMedicamentoLote().catch(error => {
         console.error('Erro ao salvar lote:', error);
       });
@@ -150,6 +152,12 @@ function setupEventListeners() {
   if (pesquisaInput) {
     pesquisaInput.addEventListener('input', filtrarMedicamentos);
   }
+
+  // Modifique esta parte no setupEventListeners()
+  const removerLoteButton = getElement('.remove-lot'); // Seleciona pelo classe
+  if (removerLoteButton) {
+    removerLoteButton.addEventListener('click', abrirModalRemoverLote);
+  }
 }
 
 // Menu dropdown
@@ -157,7 +165,7 @@ function initDropdownMenu() {
   const dropdownButtons = document.querySelectorAll('.btn-cadastros');
 
   dropdownButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
+    button.addEventListener('click', function (e) {
       e.stopPropagation();
       const dropdown = this.nextElementSibling;
       const isOpen = dropdown.style.display === 'block';
@@ -170,14 +178,14 @@ function initDropdownMenu() {
     });
   });
 
-  document.addEventListener('click', function() {
+  document.addEventListener('click', function () {
     document.querySelectorAll('.dropdown-cadastros').forEach(dropdown => {
       dropdown.style.display = 'none';
     });
   });
 
   document.querySelectorAll('.dropdown-cadastros').forEach(dropdown => {
-    dropdown.addEventListener('click', function(e) {
+    dropdown.addEventListener('click', function (e) {
       e.stopPropagation();
     });
   });
@@ -201,8 +209,10 @@ async function getMedicamentos() {
     grid.innerHTML = '<div class="error"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar. Tente recarregar.</div>';
   }
 }
+function escapeHTML(str) {
+  return str ? str.replace(/"/g, '&quot;') : '';
+}
 
-// Renderiza os cards de medicamentos
 function renderMedicamentos(lista) {
   const grid = getElement('#gridMedicamentos');
   if (!grid) return;
@@ -210,7 +220,10 @@ function renderMedicamentos(lista) {
   grid.innerHTML = '';
 
   if (!lista || lista.length === 0) {
-    grid.innerHTML = '<div class="no-results"><i class="fas fa-box-open"></i> Nenhum medicamento encontrado</div>';
+    grid.innerHTML = `
+      <div class="no-results">
+        <i class="fas fa-box-open"></i> Nenhum medicamento encontrado
+      </div>`;
     return;
   }
 
@@ -220,9 +233,29 @@ function renderMedicamentos(lista) {
     card.dataset.id = med.id;
 
     const dataValidade = med.dataValidade || med.data_validade;
-    const dataFormatada = dataValidade ? new Date(dataValidade).toLocaleDateString('pt-BR') : 'N/A';
+    const dataFormatada = dataValidade
+      ? new Date(dataValidade).toLocaleDateString('pt-BR')
+      : 'N/A';
     const estaVencido = dataValidade && new Date(dataValidade) < new Date();
     const imageUrl = formatImageUrl(med.foto);
+    const nomeSeguro = escapeHTML(med.nome || 'Sem nome');
+
+    const badgeVencido = estaVencido
+      ? `<span class="expired-badge">Vencido</span>`
+      : '';
+    const badgeInativo = med.medicamentoativo === 'Inativo'
+      ? `<span class="inactive-badge">Inativo</span>`
+      : '';
+
+    const imagemHTML = imageUrl
+      ? `
+        <img 
+          src="${imageUrl}" 
+          class="med-card-image" 
+          alt="${nomeSeguro}"
+          onerror="this.onerror=null;this.remove();this.parentElement.innerHTML='<div class=&quot;med-card-placeholder&quot;><i class=&quot;fas fa-pills&quot;></i></div>'"
+        >`
+      : `<div class="med-card-placeholder"><i class="fas fa-pills"></i></div>`;
 
     card.innerHTML = `
       <div class="med-card-actions">
@@ -231,28 +264,26 @@ function renderMedicamentos(lista) {
         </button>
       </div>
       <div class="med-card-image-container">
-        ${imageUrl
-          ? `<img src="${imageUrl}" class="med-card-image" alt="${med.nome}" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\"med-card-placeholder\"><i class=\"fas fa-pills\"></i></div>'">`
-          : '<div class="med-card-placeholder"><i class="fas fa-pills"></i></div>'}
-        ${estaVencido ? '<span class="expired-badge">Vencido</span>' : ''}
-        ${med.medicamentoativo === 'Inativo' ? '<span class="inactive-badge">Inativo</span>' : ''}
+        ${imagemHTML}
+        ${badgeVencido}
+        ${badgeInativo}
       </div>
       <div class="med-card-info">
-        <h3 class="med-card-title">${med.nome || 'Sem nome'}</h3>
+        <h3 class="med-card-title">${nomeSeguro}</h3>
         <p class="med-card-expiry ${estaVencido ? 'expired' : ''}">
           <i class="fas fa-calendar-alt"></i> ${dataFormatada}
         </p>
       </div>
     `;
 
-    // Evento de clique no card
+    // Abertura do modal ao clicar no card (exceto botão de edição)
     card.addEventListener('click', (e) => {
       if (!e.target.closest('.edit-btn') && currentModal) {
         currentModal.open(med);
       }
     });
 
-    // Evento de clique no botão de edição
+    // Abertura do modal de edição ao clicar no botão
     const editBtn = card.querySelector('.edit-btn');
     if (editBtn) {
       editBtn.addEventListener('click', (e) => {
@@ -278,9 +309,9 @@ function handleFilterChange() {
       (med.nome && med.nome.toLowerCase().includes(searchTerm)) ||
       (med.principioAtivo && med.principioAtivo.toLowerCase().includes(searchTerm)) ||
       (med.especieIndicada && med.especieIndicada.toLowerCase().includes(searchTerm));
-   
+
     const matchesStatus = statusValue === 'all' || med.medicamentoativo === statusValue;
-   
+
     return matchesSearch && matchesStatus;
   });
 
@@ -319,12 +350,12 @@ function showMedicamentoDetails(med) {
   setTextContent('#modalDosagem', med.dosagem);
   setTextContent('#modalEspecie', med.especieIndicada);
   setTextContent('#modalTipoUso', formatTipoUso(med.tipoUso));
-  
+
   const validadeEl = getElement('#modalValidade', modal);
   if (validadeEl) {
     validadeEl.innerHTML = `${dataFormatada} ${estaVencido ? '<span class="expired-badge">Vencido</span>' : ''}`;
   }
-  
+
   setTextContent('#modalIdade', med.idadeIndicada);
   setTextContent('#modalPeso', med.pesoIndicado ? `${med.pesoIndicado} kg` : null);
   setTextContent('#modalReceita', med.receitaObrigatoria ? 'Sim' : 'Não');
@@ -424,7 +455,7 @@ async function handleEditSubmit(e) {
 
   // Validação avançada dos campos
   const validationErrors = [];
-  
+
   // 1. Validação de campos obrigatórios
   const requiredFields = [
     { field: 'nome', name: 'Nome' },
@@ -435,7 +466,7 @@ async function handleEditSubmit(e) {
     { field: 'quantidadeEstoque', name: 'Quantidade em Estoque' }
   ];
 
-  requiredFields.forEach(({field, name}) => {
+  requiredFields.forEach(({ field, name }) => {
     const value = form[field]?.value?.trim();
     if (!value) validationErrors.push(`${name} é obrigatório`);
   });
@@ -505,7 +536,7 @@ async function handleEditSubmit(e) {
       let errorMessage = `Erro ${response.status}`;
       try {
         const errorData = await response.json();
-        
+
         // Tratamento especial para erros de validação do Spring
         if (errorData.errors) {
           errorMessage = Object.values(errorData.errors)
@@ -537,7 +568,7 @@ async function handleEditSubmit(e) {
 
     getElement('#editarMedicamentoModal').style.display = 'none';
     showMessage('Medicamento atualizado com sucesso!', 'success');
-    
+
   } catch (error) {
     console.error('Erro ao atualizar medicamento:', error);
     showMessage(error.message, 'error');
@@ -552,7 +583,7 @@ async function uploadFoto(medicamentoId, file) {
     // Validar arquivo
     if (!file) throw new Error('Nenhum arquivo selecionado');
     if (file.size > 10 * 1024 * 1024) throw new Error('A imagem deve ter no máximo 10MB');
-    
+
     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
     if (!validTypes.includes(file.type)) {
       throw new Error('Apenas imagens JPEG, PNG ou GIF são permitidas');
@@ -567,12 +598,12 @@ async function uploadFoto(medicamentoId, file) {
       method: 'POST',
       body: formData
     });
-    
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || 'Erro ao enviar foto');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Erro no upload:', error);
@@ -638,11 +669,13 @@ async function abrirModalLote() {
 
   const listaContainer = getElement('#listaMedicamentosLote');
   if (!listaContainer) return;
+
   listaContainer.innerHTML = '<p>Carregando medicamentos...</p>';
 
   try {
     const response = await fetch(`${apiBaseUrl}/medicamentos`);
     if (!response.ok) throw new Error('Erro ao carregar medicamentos');
+
     const medicamentos = await response.json();
 
     if (!medicamentos.length) {
@@ -650,21 +683,27 @@ async function abrirModalLote() {
       return;
     }
 
-    listaContainer.innerHTML = '';
-    medicamentos.forEach(med => {
-      const item = document.createElement('div');
-      item.className = 'item-medicamento';
-      item.innerHTML = `
-        <label for="qtd-${med.id}">${med.nome}</label>
-        <input type="number" id="qtd-${med.id}" min="0" placeholder="Qtd" value="0" />
-      `;
-      listaContainer.appendChild(item);
-    });
+    // Renderização com layout mais elegante
+    listaContainer.innerHTML = medicamentos.map(med => {
+      const nome = med.nome || 'Sem nome';
+      return `
+        <div class="item-medicamento">
+           <label for="qtd-${med.id}" title="${nome}">${nome}<span class="stock-info">(Estoque: ${med.quantidadeEstoque})</span></label>
+          <input type="number"
+                 id="qtd-${med.id}"
+                 name="qtd-${med.id}"
+                 min="0"
+                 aria-label="Quantidade para ${nome}"
+                 placeholder="0" />
+        </div>`;
+    }).join('');
+
   } catch (error) {
+    console.error('Erro ao carregar medicamentos:', error);
     listaContainer.innerHTML = '<p>Erro ao carregar medicamentos.</p>';
-    console.error(error);
   }
 }
+
 
 function fecharModalLote() {
   const modal = getElement('#modalLote');
@@ -690,14 +729,14 @@ async function salvarMedicamentoLote() {
   try {
     const listaContainer = getElement('#listaMedicamentosLote');
     if (!listaContainer) throw new Error('Container de lista não encontrado');
-    
+
     const itens = listaContainer.querySelectorAll('.item-medicamento');
     const movimentacoes = [];
 
     itens.forEach(item => {
       const input = item.querySelector('input');
       if (!input) return;
-      
+
       const id = parseInt(input.id.replace('qtd-', ''), 10);
       const quantidade = parseInt(input.value, 10);
 
@@ -737,4 +776,159 @@ async function salvarMedicamentoLote() {
     console.error('Erro ao salvar estoque em lote:', error);
     showMessage('Erro ao salvar estoque em lote: ' + error.message, 'error');
   }
+}
+// Modal de remover lote - VERSÃO COMPATÍVEL COM SEU CÓDIGO
+function initRemoverLoteModal() {
+  const modal = getElement('#modalRemoverLote');
+  if (!modal) return;
+
+  const closeBtn = getElement('.modal-lote-close', modal);
+  if (closeBtn) {
+    closeBtn.onclick = () => modal.classList.add('hidden');
+  }
+
+  modal.onclick = function (e) {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+    }
+  };
+
+  // Evento de pesquisa
+  const pesquisaInput = getElement('#pesquisaMedicamentoRemover');
+  if (pesquisaInput) {
+    pesquisaInput.addEventListener('input', filtrarMedicamentosRemover);
+  }
+
+  // Evento do botão remover
+  const removerBtn = getElement('#btnRemoverLote1');
+  if (removerBtn) {
+    removerBtn.addEventListener('click', function () {
+      removerMedicamentoLote().catch(error => {
+        console.error('Erro ao remover lote:', error);
+        showMessage('Erro ao remover medicamentos: ' + error.message, 'error');
+      });
+    });
+  }
+}
+
+// Filtrar medicamentos no modal de remoção
+function filtrarMedicamentosRemover() {
+  const filtro = getElement('#pesquisaMedicamentoRemover').value.toLowerCase();
+  const listaContainer = getElement('#listaMedicamentosRemoverLote');
+  if (!listaContainer) return;
+
+  const itens = listaContainer.querySelectorAll('.item-medicamento');
+  itens.forEach(item => {
+    const label = item.querySelector('label');
+    if (!label) return;
+    const texto = label.textContent.toLowerCase();
+    item.style.display = texto.includes(filtro) ? 'flex' : 'none';
+  });
+}
+
+// Abrir modal de remover lote
+function abrirModalRemoverLote() {
+  const modal = getElement('#modalRemoverLote');
+  if (!modal) return;
+
+  // Limpa mensagens de erro ao abrir
+  const messageContainer = getElement('#message-container');
+  if (messageContainer) messageContainer.innerHTML = '';
+
+  modal.classList.remove('hidden');
+
+  const listaContainer = getElement('#listaMedicamentosRemoverLote');
+  if (!listaContainer) return;
+
+  listaContainer.innerHTML = '<p>Carregando medicamentos...</p>';
+
+  // Carrega apenas medicamentos com estoque > 0
+  const medicamentosComEstoque = medicamentosLista.filter(m => m.quantidadeEstoque > 0);
+
+  if (medicamentosComEstoque.length === 0) {
+    listaContainer.innerHTML = '<p>Nenhum medicamento com estoque disponível.</p>';
+    return;
+  }
+
+  listaContainer.innerHTML = medicamentosComEstoque.map(med => {
+    const nome = med.nome || 'Sem nome';
+    return `
+      <div class="item-medicamento">
+        <label for="remove-qtd-${med.id}" title="${nome}">
+          ${nome} <span class="stock-info">(Estoque: ${med.quantidadeEstoque})</span>
+        </label>
+        <input type="number"
+               id="remove-qtd-${med.id}"
+               name="remove-qtd-${med.id}"
+               min="1"
+               max="${med.quantidadeEstoque}"
+               aria-label="Quantidade para remover de ${nome}"
+               placeholder="0" />
+      </div>`;
+  }).join('');
+}
+
+// Remover medicamentos em lote
+async function removerMedicamentoLote() {
+  try {
+    const listaContainer = getElement('#listaMedicamentosRemoverLote');
+    if (!listaContainer) throw new Error('Container de lista não encontrado');
+
+    const itens = listaContainer.querySelectorAll('.item-medicamento');
+    const movimentacoes = [];
+
+    itens.forEach(item => {
+      const input = item.querySelector('input');
+      if (!input) return;
+
+      const id = parseInt(input.id.replace('remove-qtd-', ''), 10);
+      const quantidade = parseInt(input.value, 10);
+
+      if (!isNaN(id) && !isNaN(quantidade) && quantidade >= 1) {
+        const medicamento = medicamentosLista.find(m => m.id === id);
+        if (medicamento && quantidade > medicamento.quantidadeEstoque) {
+          throw new Error(`Quantidade para ${medicamento.nome} excede o estoque`);
+        }
+
+        movimentacoes.push({
+          id: id,
+          tipo: "SAIDA",
+          quantidade: quantidade
+        });
+      }
+    });
+
+    if (movimentacoes.length === 0) {
+      showMessage('Preencha ao menos um campo com quantidade maior ou igual a 1.', 'error');
+      return;
+    }
+
+    const response = await fetch(`${apiBaseUrl}/medicamentos/estoque/multiplos`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(movimentacoes)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Erro ao atualizar estoque em lote.');
+    }
+
+    showMessage('Medicamentos removidos do estoque com sucesso!', 'success');
+    fecharModalRemoverLote();
+    getMedicamentos();
+
+  } catch (error) {
+    console.error('Erro ao remover medicamentos em lote:', error);
+    showMessage(error.message, 'error');
+    throw error;
+  }
+}
+
+function fecharModalRemoverLote() {
+  const modal = getElement('#modalRemoverLote');
+  if (!modal) return;
+  modal.classList.add('hidden');
 }
