@@ -4,7 +4,6 @@ const apiBaseUrl = 'http://localhost:8080';
 function getElement(selector, parent = document) {
   const element = parent.querySelector(selector);
   if (!element && !selector.includes('modal')) {
-  if (!element && !selector.includes('modal')) {
     console.warn(`Elemento não encontrado: ${selector}`);
   }
   return element;
@@ -27,11 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
     fileInput.addEventListener('change', function(e) {
       const file = e.target.files[0];
       const preview = getElement('#editarPhotoPreview');
-     
+      
       if (file) {
         const reader = new FileReader();
         reader.onload = function(event) {
-          preview.innerHTML = `<img src="${event.target.result}" class="preview-image">`;
+          preview.innerHTML = `<img src="${event.target.result}" class="preview-image" onerror="this.onerror=null;this.parentElement.innerHTML='<i class=\"fas fa-pills\"></i>'">`;
+        };
+        reader.onerror = function() {
+          preview.innerHTML = '<i class="fas fa-pills"></i>';
         };
         reader.readAsDataURL(file);
       } else {
@@ -57,7 +59,10 @@ function initModals() {
       }
     };
 
-    currentModal.closeBtn.onclick = () => currentModal.close();
+    if (currentModal.closeBtn) {
+      currentModal.closeBtn.onclick = () => currentModal.close();
+    }
+    
     detalhesModal.onclick = function(e) {
       if (e.target === detalhesModal) {
         currentModal.close();
@@ -93,7 +98,7 @@ function initModals() {
   // Modal de lote
   const loteModal = getElement('#modalLote');
   if (loteModal) {
-    const closeBtn = getElement('.close-modal', loteModal);
+    const closeBtn = getElement('.modal-lote-close', loteModal);
     if (closeBtn) {
       closeBtn.onclick = function() {
         loteModal.classList.add('hidden');
@@ -118,7 +123,12 @@ function setupEventListeners() {
   // Formulário de edição
   const editForm = getElement('#editarMedicamentoForm');
   if (editForm) {
-    editForm.addEventListener('submit', handleEditSubmit);
+    editForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      handleEditSubmit(e).catch(error => {
+        console.error('Erro no submit:', error);
+      });
+    });
   }
 
   // Eventos para modal de lote
@@ -129,7 +139,11 @@ function setupEventListeners() {
 
   const salvarLoteButton = getElement('#btnSalvarLote');
   if (salvarLoteButton) {
-    salvarLoteButton.addEventListener('click', salvarMedicamentoLote);
+    salvarLoteButton.addEventListener('click', function() {
+      salvarMedicamentoLote().catch(error => {
+        console.error('Erro ao salvar lote:', error);
+      });
+    });
   }
 
   const pesquisaInput = getElement('#pesquisaMedicamento');
@@ -185,7 +199,6 @@ async function getMedicamentos() {
   } catch (error) {
     console.error('Erro ao carregar medicamentos:', error);
     grid.innerHTML = '<div class="error"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar. Tente recarregar.</div>';
-    grid.innerHTML = '<div class="error"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar. Tente recarregar.</div>';
   }
 }
 
@@ -197,7 +210,7 @@ function renderMedicamentos(lista) {
   grid.innerHTML = '';
 
   if (!lista || lista.length === 0) {
-    grid.innerHTML = '<div class="no-results"><i class="fas fa-box-open"></i> Nenhum medicamento</div>';
+    grid.innerHTML = '<div class="no-results"><i class="fas fa-box-open"></i> Nenhum medicamento encontrado</div>';
     return;
   }
 
@@ -219,13 +232,12 @@ function renderMedicamentos(lista) {
       </div>
       <div class="med-card-image-container">
         ${imageUrl
-          ? `<img src="${imageUrl}" class="med-card-image" alt="${med.nome}">`
+          ? `<img src="${imageUrl}" class="med-card-image" alt="${med.nome}" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\"med-card-placeholder\"><i class=\"fas fa-pills\"></i></div>'">`
           : '<div class="med-card-placeholder"><i class="fas fa-pills"></i></div>'}
         ${estaVencido ? '<span class="expired-badge">Vencido</span>' : ''}
         ${med.medicamentoativo === 'Inativo' ? '<span class="inactive-badge">Inativo</span>' : ''}
       </div>
       <div class="med-card-info">
-        <h3 class="med-card-title">${med.nome || 'Sem nome'}</h3>
         <h3 class="med-card-title">${med.nome || 'Sem nome'}</h3>
         <p class="med-card-expiry ${estaVencido ? 'expired' : ''}">
           <i class="fas fa-calendar-alt"></i> ${dataFormatada}
@@ -242,10 +254,12 @@ function renderMedicamentos(lista) {
 
     // Evento de clique no botão de edição
     const editBtn = card.querySelector('.edit-btn');
-    editBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openEditModal(med);
-    });
+    if (editBtn) {
+      editBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openEditModal(med);
+      });
+    }
 
     grid.appendChild(card);
   });
@@ -294,27 +308,37 @@ function showMedicamentoDetails(med) {
   const imageUrl = formatImageUrl(med.foto);
 
   // Preenche os dados
-  getElement('#modalTitle', modal).textContent = med.nome || 'Detalhes';
-  getElement('#modalNome', modal).textContent = med.nome || 'N/A';
-  getElement('#modalPrincipioAtivo', modal).textContent = med.principioAtivo || 'N/A';
-  getElement('#modalDosagem', modal).textContent = med.dosagem || 'N/A';
-  getElement('#modalEspecie', modal).textContent = med.especieIndicada || 'N/A';
-  getElement('#modalTipoUso', modal).textContent = formatTipoUso(med.tipoUso);
-  getElement('#modalValidade', modal).innerHTML = `
-    ${dataFormatada} ${estaVencido ? '<span class="expired-badge">Vencido</span>' : ''}
-  `;
-  getElement('#modalIdade', modal).textContent = med.idadeIndicada ?? 'N/A';
-  getElement('#modalPeso', modal).textContent = med.pesoIndicado ? `${med.pesoIndicado} kg` : 'N/A';
-  getElement('#modalReceita', modal).textContent = med.receitaObrigatoria ? 'Sim' : 'Não';
-  getElement('#modalStatus', modal).textContent = formatStatus(med.medicamentoativo);
-  getElement('#modalQuantidadeEstoque', modal).textContent = med.quantidadeEstoque ?? 'N/A';
+  const setTextContent = (selector, value) => {
+    const el = getElement(selector, modal);
+    if (el) el.textContent = value || 'N/A';
+  };
+
+  setTextContent('#modalTitle', med.nome || 'Detalhes');
+  setTextContent('#modalNome', med.nome);
+  setTextContent('#modalPrincipioAtivo', med.principioAtivo);
+  setTextContent('#modalDosagem', med.dosagem);
+  setTextContent('#modalEspecie', med.especieIndicada);
+  setTextContent('#modalTipoUso', formatTipoUso(med.tipoUso));
+  
+  const validadeEl = getElement('#modalValidade', modal);
+  if (validadeEl) {
+    validadeEl.innerHTML = `${dataFormatada} ${estaVencido ? '<span class="expired-badge">Vencido</span>' : ''}`;
+  }
+  
+  setTextContent('#modalIdade', med.idadeIndicada);
+  setTextContent('#modalPeso', med.pesoIndicado ? `${med.pesoIndicado} kg` : null);
+  setTextContent('#modalReceita', med.receitaObrigatoria ? 'Sim' : 'Não');
+  setTextContent('#modalStatus', formatStatus(med.medicamentoativo));
+  setTextContent('#modalQuantidadeEstoque', med.quantidadeEstoque);
 
   // Imagem
   const photoPreview = getElement('#modalPhotoPreview', modal);
-  if (imageUrl) {
-    photoPreview.innerHTML = `<img src="${imageUrl}" class="modal-image" alt="${med.nome}" onerror="this.onerror=null;this.replaceWith('<i class=\\'fas fa-pills\\'></i>')">`;
-  } else {
-    photoPreview.innerHTML = '<i class="fas fa-pills"></i>';
+  if (photoPreview) {
+    if (imageUrl) {
+      photoPreview.innerHTML = `<img src="${imageUrl}" class="modal-image" alt="${med.nome}" onerror="this.onerror=null;this.replaceWith('<i class=\\'fas fa-pills\\'></i>')">`;
+    } else {
+      photoPreview.innerHTML = '<i class="fas fa-pills"></i>';
+    }
   }
 
   modal.style.display = 'block';
@@ -328,27 +352,35 @@ function openEditModal(medicamento) {
     return;
   }
 
+  // Função auxiliar para definir valores
+  const setValue = (selector, value) => {
+    const el = getElement(selector);
+    if (el) el.value = value || '';
+  };
+
   // Preencher o formulário
-  getElement('#editarId').value = medicamento.id;
-  getElement('#editarNome').value = medicamento.nome || '';
-  getElement('#editarPrincipioAtivo').value = medicamento.principioAtivo || '';
-  getElement('#editarDosagem').value = medicamento.dosagem || '';
-  getElement('#editarEspecie').value = medicamento.especieIndicada || '';
-  getElement('#editarTipoUso').value = medicamento.tipoUso || 'INTERNO';
-  getElement('#editarValidade').value = formatDateForInput(medicamento.dataValidade);
-  getElement('#editarIdade').value = medicamento.idadeIndicada || '';
-  getElement('#editarPeso').value = medicamento.pesoIndicado || '';
-  getElement('#editarReceita').value = medicamento.receitaObrigatoria ? 'true' : 'false';
-  getElement('#editarStatus').value = medicamento.medicamentoativo || 'Ativo';
-  getElement('#editarQuantidadeEstoque').value = medicamento.quantidadeEstoque || 0;
+  setValue('#editarId', medicamento.id);
+  setValue('#editarNome', medicamento.nome);
+  setValue('#editarPrincipioAtivo', medicamento.principioAtivo);
+  setValue('#editarDosagem', medicamento.dosagem);
+  setValue('#editarEspecie', medicamento.especieIndicada);
+  setValue('#editarTipoUso', medicamento.tipoUso || 'INTERNO');
+  setValue('#editarValidade', formatDateForInput(medicamento.dataValidade));
+  setValue('#editarIdade', medicamento.idadeIndicada);
+  setValue('#editarPeso', medicamento.pesoIndicado);
+  setValue('#editarReceita', medicamento.receitaObrigatoria ? 'true' : 'false');
+  setValue('#editarStatus', medicamento.medicamentoativo || 'Ativo');
+  setValue('#editarQuantidadeEstoque', medicamento.quantidadeEstoque);
 
   // Foto preview
   const photoPreview = getElement('#editarPhotoPreview');
-  const imageUrl = formatImageUrl(medicamento.foto);
-  if (imageUrl) {
-    photoPreview.innerHTML = `<img src="${imageUrl}" class="preview-image">`;
-  } else {
-    photoPreview.innerHTML = '<i class="fas fa-pills"></i>';
+  if (photoPreview) {
+    const imageUrl = formatImageUrl(medicamento.foto);
+    if (imageUrl) {
+      photoPreview.innerHTML = `<img src="${imageUrl}" class="preview-image" onerror="this.onerror=null;this.replaceWith('<i class=\\'fas fa-pills\\'></i>')">`;
+    } else {
+      photoPreview.innerHTML = '<i class="fas fa-pills"></i>';
+    }
   }
 
   // Resetar input de arquivo
@@ -380,102 +412,135 @@ function formatDateForInput(dateString) {
   return `${year}-${month}-${day}`;
 }
 
-// Manipula o envio do formulário de edição
+// Manipula o envio do formulário de edição - VERSÃO FINAL CORRIGIDA
 async function handleEditSubmit(e) {
   e.preventDefault();
 
-  if (!e.target.checkValidity()) {
-    e.target.reportValidity();
-    return;
-  }
-
   const form = e.target;
-  const medicamentoId = form.id.value;
-  const fileInput = getElement('#editarFoto');
-  const hasNewPhoto = fileInput.files.length > 0;
-
-  // Validações adicionais
-  if (!form.dataValidade.value) {
-    showMessage('Data de validade é obrigatória', 'error');
+  if (!form.checkValidity()) {
+    form.reportValidity();
     return;
   }
 
-  // Converter valores
-  const idadeIndicada = form.idadeIndicada.value ? parseInt(form.idadeIndicada.value) : 0;
-  const pesoIndicado = form.pesoIndicado.value ? parseFloat(form.pesoIndicado.value) : 0.0;
-  const quantidadeEstoque = form.quantidadeEstoque.value ? parseInt(form.quantidadeEstoque.value) : 0;
+  // Validação avançada dos campos
+  const validationErrors = [];
+  
+  // 1. Validação de campos obrigatórios
+  const requiredFields = [
+    { field: 'nome', name: 'Nome' },
+    { field: 'principioAtivo', name: 'Princípio Ativo' },
+    { field: 'dosagem', name: 'Dosagem' },
+    { field: 'especieIndicada', name: 'Espécie Indicada' },
+    { field: 'dataValidade', name: 'Data de Validade' },
+    { field: 'quantidadeEstoque', name: 'Quantidade em Estoque' }
+  ];
 
-  // Construir objeto de dados
+  requiredFields.forEach(({field, name}) => {
+    const value = form[field]?.value?.trim();
+    if (!value) validationErrors.push(`${name} é obrigatório`);
+  });
+
+  // 2. Validação de formato da data
+  if (form.dataValidade.value) {
+    const data = new Date(form.dataValidade.value);
+    if (isNaN(data.getTime())) {
+      validationErrors.push('Data de validade inválida');
+    }
+  }
+
+  // 3. Validação de quantidade em estoque
+  const quantidade = parseInt(form.quantidadeEstoque.value);
+  if (isNaN(quantidade) || quantidade < 0) {
+    validationErrors.push('Quantidade em estoque deve ser um número positivo');
+  }
+
+  // 4. Validação de peso indicado (se preenchido)
+  if (form.pesoIndicado.value && isNaN(parseFloat(form.pesoIndicado.value))) {
+    validationErrors.push('Peso indicado deve ser um número válido');
+  }
+
+  // 5. Validação de idade indicada (se preenchida)
+  if (form.idadeIndicada.value && isNaN(parseInt(form.idadeIndicada.value))) {
+    validationErrors.push('Idade indicada deve ser um número válido');
+  }
+
+  // Se houver erros, exibe e aborta
+  if (validationErrors.length > 0) {
+    showMessage(validationErrors.join('<br>'), 'error');
+    return;
+  }
+
+  // Preparar os dados no formato EXATO que o backend espera
   const medicamentoData = {
-    id: parseInt(medicamentoId),
+    id: parseInt(form.id.value),
     nome: form.nome.value.trim(),
     principioAtivo: form.principioAtivo.value.trim(),
     dosagem: form.dosagem.value.trim(),
     especieIndicada: form.especieIndicada.value.trim(),
     dataValidade: form.dataValidade.value,
     receitaObrigatoria: form.receitaObrigatoria.value === 'true',
-    pesoIndicado: pesoIndicado,
-    idadeIndicada: idadeIndicada,
+    pesoIndicado: form.pesoIndicado.value ? parseFloat(form.pesoIndicado.value) : null,
+    idadeIndicada: form.idadeIndicada.value ? parseInt(form.idadeIndicada.value) : null,
     medicamentoativo: form.medicamentoativo.value,
     tipoUso: form.tipoUso.value,
-    foto: null,
-    quantidadeEstoque: quantidadeEstoque
+    quantidadeEstoque: parseInt(form.quantidadeEstoque.value)
   };
 
   console.log('Dados sendo enviados:', medicamentoData);
 
-  // Mostrar loading
   showLoading(true, 'Salvando dados...');
 
   try {
     // 1. Atualizar dados básicos do medicamento
-    const response = await fetch(`${apiBaseUrl}/medicamentos/${medicamentoId}`, {
+    const response = await fetch(`${apiBaseUrl}/medicamentos/${medicamentoData.id}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify(medicamentoData)
     });
 
     if (!response.ok) {
-      let errorMessage = `Erro ${response.status}: ${response.statusText}`;
-     
+      let errorMessage = `Erro ${response.status}`;
       try {
         const errorData = await response.json();
+        
+        // Tratamento especial para erros de validação do Spring
         if (errorData.errors) {
-          errorMessage = Object.entries(errorData.errors)
-            .map(([field, message]) => `${field}: ${message}`)
-            .join('\n');
+          errorMessage = Object.values(errorData.errors)
+            .flatMap(err => Array.isArray(err) ? err : [err])
+            .join('<br>');
         } else if (errorData.message) {
           errorMessage = errorData.message;
         }
       } catch (e) {
-        console.error('Erro ao parsear resposta de erro:', e);
+        console.error('Erro ao parsear resposta:', e);
       }
-     
       throw new Error(errorMessage);
     }
 
     const responseData = await response.json();
 
-    // 2. Atualizar foto se necessário
-    if (hasNewPhoto) {
-      await uploadFoto(medicamentoId, fileInput.files[0]);
+    // 2. Atualizar foto se necessário (em chamada separada)
+    const fileInput = getElement('#editarFoto');
+    if (fileInput?.files?.length > 0) {
+      await uploadFoto(medicamentoData.id, fileInput.files[0]);
     }
 
-    // 3. Atualizar a lista de medicamentos
-    const index = medicamentosLista.findIndex(m => m.id == medicamentoId);
+    // 3. Atualizar a lista local
+    const index = medicamentosLista.findIndex(m => m.id == medicamentoData.id);
     if (index !== -1) {
       medicamentosLista[index] = responseData;
+      renderMedicamentos(medicamentosLista);
     }
 
-    renderMedicamentos(medicamentosLista);
     getElement('#editarMedicamentoModal').style.display = 'none';
     showMessage('Medicamento atualizado com sucesso!', 'success');
-   
+    
   } catch (error) {
-    console.error('Erro completo:', error);
-    showMessage(error.message || 'Erro ao atualizar medicamento', 'error');
+    console.error('Erro ao atualizar medicamento:', error);
+    showMessage(error.message, 'error');
   } finally {
     showLoading(false);
   }
@@ -483,34 +548,35 @@ async function handleEditSubmit(e) {
 
 // Função para upload da foto
 async function uploadFoto(medicamentoId, file) {
-  // Validar tamanho da foto (máximo 10MB)
-  if (file.size > 10 * 1024 * 1024) {
-    throw new Error('A imagem deve ter no máximo 10MB');
-  }
-
-  // Validar tipo de arquivo
-  const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-  if (!validTypes.includes(file.type)) {
-    throw new Error('Apenas imagens JPEG, PNG ou GIF são permitidas');
-  }
-
-  const formData = new FormData();
-  formData.append('foto', file);
-
-  showLoading(true, 'Enviando foto...');
-
   try {
+    // Validar arquivo
+    if (!file) throw new Error('Nenhum arquivo selecionado');
+    if (file.size > 10 * 1024 * 1024) throw new Error('A imagem deve ter no máximo 10MB');
+    
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      throw new Error('Apenas imagens JPEG, PNG ou GIF são permitidas');
+    }
+
+    const formData = new FormData();
+    formData.append('foto', file);
+
+    showLoading(true, 'Enviando foto...');
+
     const response = await fetch(`${apiBaseUrl}/medicamentos/${medicamentoId}/foto`, {
       method: 'POST',
       body: formData
     });
-   
+    
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Erro ao atualizar foto');
+      throw new Error(errorData.message || 'Erro ao enviar foto');
     }
-   
+    
     return await response.json();
+  } catch (error) {
+    console.error('Erro no upload:', error);
+    throw error;
   } finally {
     showLoading(false);
   }
@@ -532,15 +598,12 @@ function showMessage(text, type) {
   const messageContainer = getElement('#message-container');
   if (!messageContainer) return;
 
+  // Remove mensagens anteriores
+  messageContainer.innerHTML = '';
+
   const message = document.createElement('div');
   message.className = `message ${type}`;
   message.textContent = text;
-
-  // Remove mensagens anteriores
-  while (messageContainer.firstChild) {
-    messageContainer.removeChild(messageContainer.firstChild);
-  }
-
   messageContainer.appendChild(message);
 
   setTimeout(() => {
@@ -626,25 +689,29 @@ function filtrarMedicamentos() {
 async function salvarMedicamentoLote() {
   try {
     const listaContainer = getElement('#listaMedicamentosLote');
+    if (!listaContainer) throw new Error('Container de lista não encontrado');
+    
     const itens = listaContainer.querySelectorAll('.item-medicamento');
     const movimentacoes = [];
 
     itens.forEach(item => {
       const input = item.querySelector('input');
+      if (!input) return;
+      
       const id = parseInt(input.id.replace('qtd-', ''), 10);
       const quantidade = parseInt(input.value, 10);
 
       if (!isNaN(id) && !isNaN(quantidade) && quantidade >= 1) {
         movimentacoes.push({
           id: id,
-          tipo: "ENTRADA",  // ou ajuste se quiser permitir SAIDA
+          tipo: "ENTRADA",
           quantidade: quantidade
         });
       }
     });
 
     if (movimentacoes.length === 0) {
-      alert('Preencha ao menos um campo com quantidade maior ou igual a 1.');
+      showMessage('Preencha ao menos um campo com quantidade maior ou igual a 1.', 'error');
       return;
     }
 
@@ -662,13 +729,12 @@ async function salvarMedicamentoLote() {
     }
 
     const resultado = await response.json();
-    alert('Movimentação realizada com sucesso:\n' + (Array.isArray(resultado) ? resultado.join('\n') : resultado));
-
+    showMessage('Movimentação realizada com sucesso!', 'success');
     fecharModalLote();
-    getMedicamentos(); // atualiza a tela
+    getMedicamentos();
 
   } catch (error) {
     console.error('Erro ao salvar estoque em lote:', error);
-    alert('Erro ao salvar estoque em lote: ' + error.message);
+    showMessage('Erro ao salvar estoque em lote: ' + error.message, 'error');
   }
-}}
+}
