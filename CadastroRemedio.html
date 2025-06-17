@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cadastro de Remédio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/cadastros.css" />
+</head>
+<body id="CadastroRemedio">
+  <header>
+    <div class="header-left">
+      <a href="telaInicial.html" class="home-icon" aria-label="Página Inicial">🏠</a>
+
+      <nav class="menu-cadastros" aria-label="Menu de Cadastros">
+        <button class="btn-cadastros" aria-haspopup="true" aria-expanded="false">Cadastros</button>
+        <ul class="dropdown-cadastros" role="menu" hidden>
+          <li role="none"><a href="CadastroCliente.html" role="menuitem">Cadastro Cliente</a></li>
+          <li role="none"><a href="CadastroRemedio.html" role="menuitem">Cadastro Remédio</a></li>
+          <li role="none"><a href="CadastroPet.html" role="menuitem">Cadastro Pet</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <button class="user-icon" aria-label="Perfil do Usuário">👤</button>
+  </header>
+
+  <main>
+    <form id="medicamentoForm" class="form-cadastro" enctype="multipart/form-data" novalidate>
+      <h2>Preencha as informações</h2>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="nome">Nome:</label>
+          <input type="text" placeholder="Nome do medicamento" id="nome" name="nome" required />
+        </div>
+        <div class="input-group">
+          <label for="receita_obrigatoria">É obrigatório o uso de receita?</label>
+          <select id="receita_obrigatoria" name="receita_obrigatoria" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="true">Sim</option>
+            <option value="false">Não</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="principio_ativo">Princípio ativo:</label>
+          <input type="text" placeholder="Princípio ativo do medicamento" id="principio_ativo" name="principio_ativo" required />
+        </div>
+        <div class="input-group">
+          <label for="peso_indicado">Peso indicado (kg):</label>
+          <input type="number" step="0.01" id="peso_indicado" name="peso_indicado" min="0" />
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="dosagem">Dosagem:</label>
+          <input type="text" placeholder="Dosagem do medicamento" id="dosagem" name="dosagem" required />
+        </div>
+        <div class="input-group">
+          <label for="idade_indicada">Idade indicada (anos):</label>
+          <input type="number" id="idade_indicada" name="idade_indicada" min="0" />
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="especie_indicada">Espécie indicada:</label>
+          <input type="text" placeholder="Espécie indicada do medicamento" id="especie_indicada" name="especie_indicada" />
+        </div>
+        <div class="input-group">
+          <label for="tipo_uso">Uso interno ou externo:</label>
+          <select id="tipo_uso" name="tipo_uso" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="INTERNO">Interno</option>
+            <option value="EXTERNO">Externo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label for="data_validade">Data de validade:</label>
+          <input type="date" id="data_validade" name="data_validade" required />
+        </div>
+        <div class="input-group">
+          <label for="medicamentoativo">Produto ativo:</label>
+          <select id="medicamentoativo" name="medicamentoativo" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="Ativo">Sim</option>
+            <option value="Inativo">Não</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-group file-upload">
+          <label for="foto">Foto do medicamento:</label>
+          <input type="file" id="foto" name="foto" accept="image/*" />
+          <div id="photoPreview" aria-live="polite" aria-atomic="true" style="margin-top:10px; font-size: 2rem;">📷</div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-cadastrar">Cadastrar</button>
+    </form>
+  </main>
+
+  <script src="js/scriptCadastros.js"></script>
+  <script>
+    // Script para toggle dropdown menu
+    const btnCadastros = document.querySelector('.btn-cadastros');
+    const dropdown = document.querySelector('.dropdown-cadastros');
+
+    btnCadastros.addEventListener('click', () => {
+      const expanded = btnCadastros.getAttribute('aria-expanded') === 'true';
+      btnCadastros.setAttribute('aria-expanded', !expanded);
+      if (!expanded) {
+        dropdown.removeAttribute('hidden');
+        dropdown.classList.add('show');
+      } else {
+        dropdown.setAttribute('hidden', '');
+        dropdown.classList.remove('show');
+      }
+    });
+
+    // Fecha dropdown ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!btnCadastros.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.setAttribute('hidden', '');
+        dropdown.classList.remove('show');
+        btnCadastros.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+</body>
+</html>
