@@ -1,35 +1,28 @@
+/* =========================
+   BASE GERAL
+========================= */
 * {
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
   margin: 0;
   background-color: #f9f9f9;
-  color: #000;
+  color: #333;
+  font-family: 'Poppins', sans-serif;
 }
 
-.home-icon {
-  display: inline-block;
-  margin-right: 20px;
-  font-size: 24px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: #000;
-}
-
-.home-icon:hover {
-  transform: scale(1.1);
-  color: #555;
-}
-
+/* =========================
+   HEADER
+========================= */
 header {
   background-color: #6df0b1;
   display: flex;
-  justify-content: space-between; /* Espaço entre os itens esquerda e direita */
+  justify-content: space-between;
   align-items: center;
   padding: 10px 30px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .header-left {
@@ -38,131 +31,35 @@ header {
   gap: 20px;
 }
 
-.menu-cadastros {
-  position: relative;
-  display: inline-block;
-}
-
-.search-container {
-  margin: 20px auto;
-  max-width: 600px;
-  display: flex;
-}
-
-.search-container input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px 0 0 5px;
-}
-
-.search-container button {
-  padding: 10px;
-  background: white;
-  color: white;
-  border: 1px solid #ccc;
-  border-radius: 0 5px 5px 0;
+.home-icon {
+  font-size: 24px;
   cursor: pointer;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 8px 8px;
-  padding: 0 250px; 
-  box-sizing: border-box; 
-}
-
-.card {
-  background: #d3d3d3;
-  width: 200px;
-  height: 150px;
-  border-radius: 8px;
-  position: relative;
-}
-
-.fixed-buttons {
-  position: fixed;
-  bottom: 30px;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px;
-}
-
-.left-buttons {
-  display: flex;
-  gap: 10px;
-  padding: 0px 230px
-}
-
-.fixed-buttons button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.add-lot {
-  background: #28f05a;
-}
-
-.remove-lot {
-  background: #ffc066;
-}
-
-.new-register {
-  background: #89f8c0;
-  border-radius: 10px;
-  display: inline-block;
-}
-
-.new-register a {
-  background: #89f8c0;
-  border: none;
-  padding: 12px 20px;
-  font-size: 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  min-width: 180px;
-  display: inline-flex; /* Alterado para flex para melhor alinhamento */
-  align-items: center;
-  justify-content: center;
-  gap: 8px; /* Espaço entre ícone e texto */
-  text-decoration: none;
   color: #333;
-  position: relative;
-  overflow: hidden;
+  text-decoration: none;
   transition: all 0.3s ease;
+  margin-right: 20px;
 }
 
-.new-register a::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: all 0.6s ease;
+.home-icon:hover {
+  transform: scale(1.1);
+  color: #555;
 }
 
-.new-register a:hover::before {
-  left: 100%;
+.user-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #8080808c;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  cursor: pointer;
 }
 
-.new-register a:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  background: #7ae8b5; /* Cor levemente mais escura no hover */
-}
-
-.new-register a:active {
-  transform: translateY(0) scale(0.98);
-}
-
+/* =========================
+   MENU CADASTROS
+========================= */
 .menu-cadastros {
   position: relative;
   display: inline-block;
@@ -173,6 +70,19 @@ header {
   border: none;
   font-size: 18px;
   cursor: pointer;
+  padding: 5px 10px;
+  transition: all 0.3s;
+}
+
+.btn-cadastros::after {
+  content: ' ▼';
+  font-size: 0.8em;
+}
+
+.btn-cadastros:hover {
+  color: #333;
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 5px;
 }
 
 .dropdown-cadastros {
@@ -183,11 +93,17 @@ header {
   background-color: white;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  padding: 0;
-  margin: 5px 0 0 0;
-  list-style: none;
   min-width: 180px;
+  padding: 0;
+  margin: 5px 0 0;
+  list-style: none;
   z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .dropdown-cadastros li {
@@ -202,7 +118,7 @@ header {
   display: block;
   padding: 10px 15px;
   text-decoration: none;
-  color: #000;
+  color: #333;
   transition: all 0.2s ease;
 }
 
@@ -211,74 +127,191 @@ header {
   transform: translateX(5px);
 }
 
-.btn-cadastros::after {
-  content: ' ▼';
-  font-size: 0.8em;
-}
-
-.dropdown-cadastros.show {
-  display: block;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.user-icon {
-  width: 50px;
-  height: 50px;
-  background-color: #8080808c;
-  border-radius: 50%;
+/* =========================
+   BUSCA
+========================= */
+.search-container {
+  margin: 20px auto;
+  max-width: 1000px;
   display: flex;
-  justify-content: center;
+  gap: 10px;
+  padding: 0 20px;
   align-items: center;
-  font-size: 24px;
-  cursor: pointer;
 }
 
-.fixed-buttons button {
+.search-container input {
+  flex: 2;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
 }
 
-.fixed-buttons button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-  transition: all 0.6s ease;
+.search-container input:focus {
+  border-color: #6df0b1;
+  outline: none;
+  transform: scale(1.02);
+  box-shadow: 0 0 0 2px #6df0b1;
 }
 
-.fixed-buttons button:hover::before {
-  left: 100%;
+.search-container button {
+  padding: 10px 15px;
+  background: #6df0b1;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
 }
 
-.fixed-buttons button:hover {
-  transform: translateY(-3px);
+.search-container button:hover {
+  background: #5ad89c;
+}
+
+.status-filter {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  background: white;
+  cursor: pointer;
+  flex: 1;
+  max-width: 200px;
+  transition: border-color 0.3s;
+}
+
+.status-filter:focus {
+  border-color: #6df0b1;
+  outline: none;
+}
+
+.clear-filters {
+  padding: 10px 15px;
+  background: #f0f0f0;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.clear-filters:hover {
+  background: #e0e0e0;
+}
+
+/* =========================
+   LISTA DE MEDICAMENTOS (ATUALIZADO)
+========================= */
+.medicamentos-lista-container {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+.medicamentos-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.medicamento-item {
+  background: white;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.medicamento-item:hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
 }
 
-.fixed-buttons button:active {
-  transform: translateY(0) scale(0.98);
+.medicamento-checkbox {
+  margin-right: 15px;
 }
 
+.medicamento-checkbox input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #6df0b1;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.medicamento-checkbox input[type="checkbox"]:checked {
+  background-color: #6df0b1;
+}
+
+.medicamento-checkbox input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.medicamento-conteudo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.medicamento-nome {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.medicamento-data {
+  font-size: 14px;
+  color: #666;
+}
+
+.medicamento-acoes {
+  display: flex;
+  gap: 10px;
+}
+
+.lista-divisor {
+  border: none;
+  height: 1px;
+  background-color: #eee;
+  margin: 20px 0;
+}
+
+/* =========================
+   GRID DE MEDICAMENTOS
+========================= */
 #gridMedicamentos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
   padding: 20px;
   max-width: 1200px;
-  margin: 0 auto; 
+  margin: 0 auto;
   justify-items: center;
 }
 
-/* Card individual */
+@media (max-width: 768px) {
+  #gridMedicamentos {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+}
+
 .med-card {
   width: 100%;
   max-width: 280px;
@@ -286,15 +319,10 @@ header {
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid #e0e0e0;
-}
-
-.med-card-expiry {
-  background: #f8f8f8;
-  padding: 5px;
-  border-radius: 4px;
-  display: inline-block;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  border: 1px solid #e0e0e0;
+  position: relative;
 }
 
 .med-card:hover {
@@ -302,7 +330,6 @@ header {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Container da imagem */
 .med-card-image-container {
   height: 200px;
   background: #f5f5f5;
@@ -310,33 +337,35 @@ header {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
 }
 
-/* Imagem do medicamento */
 .med-card-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
+  object-fit: contain;
+  transition: transform 0.3s;
 }
 
 .med-card:hover .med-card-image {
   transform: scale(1.05);
 }
 
-/* Placeholder quando não tem imagem */
 .med-card-placeholder {
   color: #999;
   font-size: 16px;
 }
 
-/* Área de informações */
+.med-card-placeholder i {
+  font-size: 40px;
+  color: #ddd;
+}
+
 .med-card-info {
   padding: 15px;
   text-align: center;
 }
 
-/* Título do medicamento */
 .med-card-title {
   margin: 0 0 8px 0;
   color: #333;
@@ -344,66 +373,646 @@ header {
   font-weight: 600;
 }
 
-/* Data de validade */
 .med-card-expiry {
   margin: 0;
   color: #666;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: #f8f8f8;
+  padding: 5px;
+  border-radius: 4px;
+  display: inline-block;
 }
 
-@media (max-width: 600px) {
-  #gridMedicamentos {
-    grid-template-columns: 1fr;
-  }
+.expired-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #e74c3c;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
-.edit-button {
-  transition: all 0.3s ease;
+.inactive-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #f39c12;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
-.edit-button:hover {
-  transform: scale(1.3);
+.expired {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+/* =========================
+   BOTÕES FIXOS
+========================= */
+.fixed-buttons {
+  position: fixed;
+  bottom: 30px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.left-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.botoes-lote-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.botoes-lote {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-lote {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-adicionar-lote {
+  background-color: #28f05a;
+  color: #333;
+}
+
+.btn-remover-lote {
+  background-color: #ffc066;
+  color: #333;
+}
+
+.btn-lote:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.fixed-buttons button, .new-register a {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fixed-buttons button::before, .new-register a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: all 0.6s;
+}
+
+.fixed-buttons button:hover::before, .new-register a:hover::before {
+  left: 100%;
+}
+
+.fixed-buttons button:hover, .new-register a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.fixed-buttons button:active, .new-register a:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.add-lot {
+  background: #28f05a;
+  color: #333;
+}
+
+.remove-lot {
+  background: #ffc066;
+  color: #333;
+}
+
+.new-register {
+  background: #89f8c0;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.new-register a {
+  background: #89f8c0;
+  color: #333;
+  text-decoration: none;
+  min-width: 180px;
+  justify-content: center;
+}
+
+.new-register a:hover {
+  background: #7ae8b5;
+}
+
+/* =========================
+   MODAL (Detalhes e Edição)
+========================= */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  overflow: auto;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 25px;
+  border-radius: 10px;
+  max-width: 700px;
+  width: 90%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-50px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.close-modal {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close-modal:hover {
+  color: #333;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal-photo-preview {
+  width: 100%;
+  height: 250px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px dashed #ddd;
+}
+
+.modal-photo-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.modal-photo-preview i {
+  font-size: 60px;
+  color: #ddd;
+}
+
+.modal-info {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.modal-info p {
+  margin: 0;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-info strong {
+  color: #555;
+  min-width: 150px;
+  display: inline-block;
+}
+
+/* =========================
+   FORMULÁRIO DE EDIÇÃO
+========================= */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
   color: #555;
 }
 
-.search-container input {
-  transition: all 0.3s ease;
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s;
 }
 
-.search-container input:focus {
-  transform: scale(1.02);
-  box-shadow: 0 0 0 2px #6df0b1;
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #6df0b1;
+  outline: none;
 }
 
-.search-container button {
-  transition: all 0.3s ease;
+.form-text {
+  font-size: 12px;
+  color: #6c757d;
+  margin-top: 5px;
+  display: block;
 }
 
-.search-container button:hover {
-  background-color: #6df0b1;
-  color: black;
-}
-
-.edit-button {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 8px 12px;
+.photo-preview {
+  height: 150px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
   margin-top: 10px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px dashed #ccc;
+}
+
+.photo-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.photo-preview i {
+  font-size: 40px;
+  color: #ddd;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-salvar {
+  background-color: #6df0b1;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-salvar:hover {
+  background-color: #5ad89c;
+}
+
+.btn-cancelar {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-cancelar:hover {
+  background-color: #e0e0e0;
+}
+
+/* =========================
+   BOTÃO DE EDIÇÃO NO CARD
+========================= */
+.med-card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
   gap: 5px;
+  z-index: 1;
 }
 
-.edit-button:hover {
-  background-color: #2980b9;
-  transform: translateY(-2px);
+.edit-btn {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
-.edit-button i {
+.edit-btn:hover {
+  background-color: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+.edit-btn i {
+  color: #333;
   font-size: 14px;
+}
+
+/* =========================
+   MODAL DE LOTE
+========================= */
+.modal-lote {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+}
+
+.modal-lote.hidden {
+  display: none;
+}
+
+.modal-lote-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 600px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow: hidden;
+  position: relative;
+  animation: modalFadeIn 0.3s;
+}
+
+.modal-lote-close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.3s;
+}
+
+.modal-lote-close:hover {
+  color: #333;
+}
+
+.modal-lote-content h2 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.input-pesquisa {
+  padding: 10px 15px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.input-pesquisa:focus {
+  border-color: #6df0b1;
+  outline: none;
+}
+
+.lista-medicamentos-lote {
+  flex-grow: 1;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 12px 16px;
+  border-radius: 8px;
+  max-height: 400px;
+  background-color: #fafafa;
+}
+
+.lista-medicamentos-lote .item-medicamento {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.lista-medicamentos-lote .item-medicamento:last-child {
+  border-bottom: none;
+}
+
+.lista-medicamentos-lote label {
+  flex: 1;
+  font-weight: 600;
+  color: #222;
+}
+
+.lista-medicamentos-lote input[type="number"] {
+  width: 70px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid #999;
+  font-size: 15px;
+}
+
+/* =========================
+   MENSAGENS
+========================= */
+#message-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.message {
+  padding: 15px 20px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  color: white;
+  animation: slideIn 0.3s ease-out;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.message.success {
+  background-color: #2ecc71;
+}
+
+.message.error {
+  background-color: #e74c3c;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* =========================
+   ESTADOS (loading, error, etc)
+========================= */
+.loading, .error, .no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.loading i {
+  color: #6df0b1;
+  animation: spin 1s linear infinite;
+}
+
+.error i {
+  color: #e74c3c;
+}
+
+.no-results i {
+  color: #999;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* =========================
+   RESPONSIVIDADE
+========================= */
+@media (max-width: 768px) {
+  .fixed-buttons {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .left-buttons {
+    width: 100%;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .fixed-buttons button, .new-register a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .search-container {
+    flex-wrap: wrap;
+  }
+
+  .search-container input,
+  .search-container button,
+  .status-filter,
+  .clear-filters {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .modal-content, .modal-lote-content {
+    margin: 10% auto;
+    padding: 15px;
+    width: 95%;
+  }
+
+  .medicamento-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
+  
+  .medicamento-checkbox {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  
+  .medicamento-acoes {
+    margin-top: 10px;
+    align-self: flex-end;
+  }
+  
+  .botoes-lote-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .botoes-lote {
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .btn-lote {
+    flex: 1;
+    justify-content: center;
+  }
 }

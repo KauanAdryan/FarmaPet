@@ -1,48 +1,198 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cadastro</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmácia Pet - Cadastro de Medicamentos</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="css/telaInicial.css">
 </head>
 <body>
-<header>
-  <div class="header-left">
-    <a href="telaInicial.html" class="home-icon">🏠</a>
-    <div class="menu-cadastros">
-      <button class="btn-cadastros">Cadastros</button>
-      <ul class="dropdown-cadastros">
-        <li><a href="CadastroCliente.html">Cadastro Cliente</a></li>
-        <li><a href="CadastroRemedio.html">Cadastro Remédio</a></li>
-        <li><a href="CadastroPet.html">Cadastro Pet</a></li>
-      </ul>
+  <header>
+    <div class="header-left">
+      <a href="telaInicial.html" class="home-icon">🏠</a>
+      <div class="menu-cadastros">
+        <button class="btn-cadastros">Cadastros</button>
+        <ul class="dropdown-cadastros">
+          <li><a href="CadastroCliente.html">Cadastro Cliente</a></li>
+          <li><a href="CadastroRemedio.html">Cadastro Remédio</a></li>
+          <li><a href="CadastroPet.html">Cadastro Pet</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <div class="user-icon">👤</div>
-</header>
+    <div class="user-icon">👤</div>
+  </header>
+ 
   <div class="search-container">
-    <input type="text" placeholder="Buscar..." />
-    <button>🔍</button>
+    <input type="text" id="searchInput" placeholder="Buscar por nome, princípio ativo ou espécie...">
+    <button id="searchButton">🔍</button>
+    <select id="statusFilter" class="status-filter">
+      <option value="all">Todos os status</option>
+      <option value="Ativo">Ativo</option>
+      <option value="Inativo">Inativo</option>
+    </select>
+    <button id="clearFilters" class="clear-filters">Limpar</button>
   </div>
+ 
   <div id="gridMedicamentos"></div>
-  </div>
+ 
   <div class="fixed-buttons">
     <div class="left-buttons">
-      <button class="add-lot">📦 Adicionar em lote</button>
+      <button class="add-lot" onclick="abrirModalLote()">📦 Adicionar em lote</button>
       <button class="remove-lot">🗑️ Remover em lote</button>
     </div>
-<div class="new-register">
-  <a href="CadastroRemedio.html" class="btn-cadastrar">
-    <i class="fas fa-plus"></i>➕ Cadastrar novo
-  </a>
-</div>
+    <div class="new-register">
+      <a href="CadastroRemedio.html" class="btn-cadastrar">
+        <i class="fas fa-plus"></i> Cadastrar novo
+      </a>
+    </div>
+  </div>
+ 
+  <!-- Modal de detalhes -->
+  <div id="medicamentoModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-header">
+        <h2 id="modalTitle">Detalhes do Medicamento</h2>
+      </div>
+      <div class="modal-body">
+        <div id="modalPhotoPreview" class="modal-photo-preview">
+          <i class="fas fa-pills"></i>
+        </div>
+        <div class="modal-info">
+          <p><strong>Nome:</strong> <span id="modalNome"></span></p>
+          <p><strong>Princípio Ativo:</strong> <span id="modalPrincipioAtivo"></span></p>
+          <p><strong>Dosagem:</strong> <span id="modalDosagem"></span></p>
+          <p><strong>Espécie Indicada:</strong> <span id="modalEspecie"></span></p>
+          <p><strong>Tipo de Uso:</strong> <span id="modalTipoUso"></span></p>
+          <p><strong>Data de Validade:</strong> <span id="modalValidade"></span></p>
+          <p><strong>Idade Indicada:</strong> <span id="modalIdade"></span></p>
+          <p><strong>Peso Indicado:</strong> <span id="modalPeso"></span></p>
+          <p><strong>Receita Obrigatória:</strong> <span id="modalReceita"></span></p>
+          <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+          <p><strong>Quantidade em Estoque:</strong> <span id="modalQuantidadeEstoque"></span></p>
+        </div>
       </div>
     </div>
   </div>
+ 
+  <!-- Modal de edição -->
+  <div id="editarMedicamentoModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-header">
+        <h2>Editar Medicamento</h2>
+      </div>
+      <div class="modal-body">
+        <form id="editarMedicamentoForm">
+          <input type="hidden" id="editarId" name="id">
+         
+          <div class="form-group">
+            <label for="editarNome">Nome:</label>
+            <input type="text" id="editarNome" name="nome" required>
+          </div>
+         
+          <div class="form-group">
+            <label for="editarPrincipioAtivo">Princípio Ativo:</label>
+            <input type="text" id="editarPrincipioAtivo" name="principioAtivo" required>
+          </div>
+         
+          <div class="form-group">
+            <label for="editarDosagem">Dosagem:</label>
+            <input type="text" id="editarDosagem" name="dosagem" required>
+          </div>
+         
+          <div class="form-group">
+            <label for="editarEspecie">Espécie Indicada:</label>
+            <input type="text" id="editarEspecie" name="especieIndicada" required>
+          </div>
+         
+          <div class="form-group">
+            <label for="editarTipoUso">Tipo de Uso:</label>
+            <select id="editarTipoUso" name="tipoUso" required>
+              <option value="INTERNO">Uso Interno</option>
+              <option value="EXTERNO">Uso Externo</option>
+            </select>
+          </div>
+         
+          <div class="form-group">
+            <label for="editarValidade">Data de Validade:</label>
+            <input type="date" id="editarValidade" name="dataValidade" required>
+          </div>
+         
+          <div class="form-group">
+            <label for="editarIdade">Idade Indicada:</label>
+            <input type="number" id="editarIdade" name="idadeIndicada" min="0">
+          </div>
+         
+          <div class="form-group">
+            <label for="editarPeso">Peso Indicado (kg):</label>
+            <input type="number" step="0.1" id="editarPeso" name="pesoIndicado" min="0">
+          </div>
+         
+          <div class="form-group">
+            <label for="editarQuantidadeEstoque">Quantidade em Estoque:</label>
+            <input type="number" id="editarQuantidadeEstoque" name="quantidadeEstoque" required min="0">
+          </div>
+         
+          <div class="form-group">
+            <label for="editarReceita">Receita Obrigatória:</label>
+            <select id="editarReceita" name="receitaObrigatoria" required>
+              <option value="false">Não</option>
+              <option value="true">Sim</option>
+            </select>
+          </div>
+         
+          <div class="form-group">
+            <label for="editarStatus">Status:</label>
+            <select id="editarStatus" name="medicamentoativo" required>
+              <option value="Ativo">Ativo</option>
+              <option value="Inativo">Inativo</option>
+            </select>
+          </div>
+         
+          <div class="form-group">
+            <label for="editarFoto">Foto:</label>
+            <input type="file" id="editarFoto" name="foto" accept="image/jpeg, image/png, image/gif">
+            <small class="form-text">Formatos aceitos: JPEG, PNG, GIF (máx. 10MB)</small>
+            <div id="editarPhotoPreview" class="photo-preview">
+              <i class="fas fa-pills"></i>
+            </div>
+          </div>
+         
+          <div class="form-actions">
+            <button type="submit" class="btn-salvar">
+              <i class="fas fa-save"></i> Salvar Alterações
+            </button>
+            <button type="button" class="btn-cancelar">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Adicionar em Lote -->
+  <div id="modalLote" class="modal-lote hidden" role="dialog" aria-modal="true" aria-labelledby="modalLoteTitle">
+    <div class="modal-lote-content">
+      <span class="modal-lote-close" onclick="fecharModalLote()" aria-label="Fechar modal">×</span>
+      <h2 id="modalLoteTitle">Adicionar Medicamento em Lote</h2>
+
+      <input type="text" id="pesquisaMedicamento" placeholder="Pesquisar medicamento..." oninput="filtrarMedicamentos()"
+        class="input-pesquisa" aria-label="Pesquisar medicamento" />
+
+      <div id="listaMedicamentosLote" class="lista-medicamentos-lote" tabindex="0">
+        <!-- Será preenchido via JS -->
+      </div>
+
+      <button class="btn-cadastrar" onclick="salvarMedicamentoLote()">Salvar</button>
+    </div>
+  </div>
+ 
   <div id="message-container"></div>
+ 
   <script src="js/script.js"></script>
-  <script src="js/scriptCadastros.js"></script>
 </body>
+</html>
