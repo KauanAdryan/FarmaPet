@@ -4,6 +4,7 @@ const apiBaseUrl = 'http://localhost:8080';
 function getElement(selector, parent = document) {
   const element = parent.querySelector(selector);
   if (!element && !selector.includes('modal')) {
+  if (!element && !selector.includes('modal')) {
     console.warn(`Elemento não encontrado: ${selector}`);
   }
   return element;
@@ -184,6 +185,7 @@ async function getMedicamentos() {
   } catch (error) {
     console.error('Erro ao carregar medicamentos:', error);
     grid.innerHTML = '<div class="error"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar. Tente recarregar.</div>';
+    grid.innerHTML = '<div class="error"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar. Tente recarregar.</div>';
   }
 }
 
@@ -195,7 +197,7 @@ function renderMedicamentos(lista) {
   grid.innerHTML = '';
 
   if (!lista || lista.length === 0) {
-    grid.innerHTML = '<div class="no-results"><i class="fas fa-box-open"></i> Nenhum medicamento encontrado</div>';
+    grid.innerHTML = '<div class="no-results"><i class="fas fa-box-open"></i> Nenhum medicamento</div>';
     return;
   }
 
@@ -223,6 +225,7 @@ function renderMedicamentos(lista) {
         ${med.medicamentoativo === 'Inativo' ? '<span class="inactive-badge">Inativo</span>' : ''}
       </div>
       <div class="med-card-info">
+        <h3 class="med-card-title">${med.nome || 'Sem nome'}</h3>
         <h3 class="med-card-title">${med.nome || 'Sem nome'}</h3>
         <p class="med-card-expiry ${estaVencido ? 'expired' : ''}">
           <i class="fas fa-calendar-alt"></i> ${dataFormatada}
@@ -668,4 +671,4 @@ async function salvarMedicamentoLote() {
     console.error('Erro ao salvar estoque em lote:', error);
     alert('Erro ao salvar estoque em lote: ' + error.message);
   }
-}
+}}
