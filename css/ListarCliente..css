@@ -1,0 +1,424 @@
+/* ======== BASE ======== */
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+body {
+  margin: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* ======== HEADER ======== */
+header {
+  background-color: #6df0b1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.user-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #8080808c;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* ======== BUSCA ======== */
+.search-container {
+  margin: 20px auto;
+  max-width: 800px;
+  display: flex;
+  gap: 10px;
+  padding: 0 20px;
+}
+.search-container input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.search-container button {
+  padding: 10px 15px;
+  background: #6df0b1;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #fff;
+}
+.search-container button:hover {
+  background: #54c494;
+}
+
+/* ======== GRID DE CLIENTES ======== */
+#gridClientes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.client-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.client-card:hover {
+  transform: translateY(-5px);
+}
+.client-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.client-avatar {
+  width: 50px;
+  height: 50px;
+  background-color: #89f8c0;
+  border-radius: 50%;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  color: #fff;
+}
+.client-info h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.client-details {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+.detail-row {
+  margin-bottom: 6px;
+}
+
+/* ======== MODAL EDITAR CLIENTE ======== */
+#clienteEditModal.modal {
+  display: none; /* inicialmente escondido */
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+#clienteEditModal .modal-content {
+  background: #fff;
+  margin: 5% auto;
+  padding: 20px 30px;
+  border-radius: 10px;
+  max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+#clienteEditModal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#clienteEditModal .modal-header h2 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+#clienteEditModal .close-modal {
+  font-size: 28px;
+  font-weight: 700;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+#clienteEditModal .close-modal:hover {
+  color: #000;
+}
+
+/* Usando suas classes de formulário */
+#clienteEditModal form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#clienteEditModal form .form-group {
+  margin-bottom: 15px;
+}
+
+#clienteEditModal form .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #555;
+}
+
+#clienteEditModal form .form-group input,
+#clienteEditModal form .form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+#clienteEditModal form .form-group input:focus,
+#clienteEditModal form .form-group select:focus {
+  border-color: #6df0b1;
+  outline: none;
+}
+
+/* Rodapé do modal com botões */
+#clienteEditModal .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+#clienteEditModal .btn-salvar {
+  background-color: #6df0b1;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#clienteEditModal .btn-salvar:hover {
+  background-color: #5ad89c;
+}
+
+#clienteEditModal .btn-cancelar {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#clienteEditModal .btn-cancelar:hover {
+  background-color: #e0e0e0;
+}
+/* ======== BOTÕES DE AÇÃO NOS CARDS ======== */
+.client-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.btn-edit {
+  background-color: #6df0b1;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-edit:hover {
+  background-color: #54c494;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-edit i {
+  font-size: 14px;
+}
+
+/* ======== MODAL DE EDIÇÃO ======== */
+#editClienteModal.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1000;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+#editClienteModal .modal-content {
+  background: white;
+  margin: 50px auto;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  position: relative;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+#editClienteModal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+#editClienteModal .modal-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+#editClienteModal .close-modal {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #777;
+  transition: color 0.3s;
+}
+
+#editClienteModal .close-modal:hover {
+  color: #333;
+}
+
+/* Formulário de edição */
+#formEditarCliente .info-row {
+  margin-bottom: 20px;
+}
+
+#formEditarCliente label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+#formEditarCliente input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: all 0.3s;
+}
+
+#formEditarCliente input:focus {
+  border-color: #6df0b1;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(109, 240, 177, 0.2);
+}
+
+/* Rodapé do modal */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.modal-footer button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.modal-footer button[type="submit"] {
+  background-color: #6df0b1;
+  color: #333;
+  border: none;
+}
+
+.modal-footer button[type="submit"]:hover {
+  background-color: #54c494;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 10px rgba(84, 196, 148, 0.3);
+}
+
+.modal-footer button[type="button"] {
+  background-color: #f5f5f5;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.modal-footer button[type="button"]:hover {
+  background-color: #eaeaea;
+  color: #333;
+}
+
+/* Mensagens de erro */
+.error-message {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 5px;
+  display: none;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  #editClienteModal .modal-content {
+    width: 95%;
+    padding: 20px;
+    margin: 20px auto;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .modal-footer button {
+    width: 100%;
+  }
+}

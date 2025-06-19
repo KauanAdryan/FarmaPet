@@ -10,7 +10,6 @@ body {
   margin: 0;
   background-color: #f9f9f9;
   color: #333;
-  font-family: 'Poppins', sans-serif;
 }
 
 /* =========================
@@ -203,7 +202,7 @@ header {
 }
 
 /* =========================
-   LISTA DE MEDICAMENTOS (ATUALIZADO)
+   LISTA DE MEDICAMENTOS
 ========================= */
 .medicamentos-lista-container {
   max-width: 1000px;
@@ -231,10 +230,6 @@ header {
 .medicamento-item:hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transform: translateY(-2px);
-}
-
-.medicamento-checkbox {
-  margin-right: 15px;
 }
 
 .medicamento-checkbox input[type="checkbox"] {
@@ -303,13 +298,6 @@ header {
   max-width: 1200px;
   margin: 0 auto;
   justify-items: center;
-}
-
-@media (max-width: 768px) {
-  #gridMedicamentos {
-    grid-template-columns: 1fr;
-    padding: 15px;
-  }
 }
 
 .med-card {
@@ -387,11 +375,9 @@ header {
   display: inline-block;
 }
 
-.expired-badge {
+.expired-badge, .inactive-badge {
   position: absolute;
   top: 10px;
-  right: 10px;
-  background-color: #e74c3c;
   color: white;
   padding: 3px 8px;
   border-radius: 12px;
@@ -399,16 +385,14 @@ header {
   font-weight: bold;
 }
 
+.expired-badge {
+  right: 10px;
+  background-color: #e74c3c;
+}
+
 .inactive-badge {
-  position: absolute;
-  top: 10px;
   left: 10px;
   background-color: #f39c12;
-  color: white;
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: bold;
 }
 
 .expired {
@@ -446,35 +430,7 @@ header {
   gap: 12px;
 }
 
-.btn-lote {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-adicionar-lote {
-  background-color: #28f05a;
-  color: #333;
-}
-
-.btn-remover-lote {
-  background-color: #ffc066;
-  color: #333;
-}
-
-.btn-lote:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-}
-
-.fixed-buttons button, .new-register a {
+.btn-lote, .fixed-buttons button, .new-register a {
   padding: 12px 20px;
   border: none;
   border-radius: 10px;
@@ -488,7 +444,7 @@ header {
   gap: 8px;
 }
 
-.fixed-buttons button::before, .new-register a::before {
+.btn-lote::before, .fixed-buttons button::before, .new-register a::before {
   content: '';
   position: absolute;
   top: 0;
@@ -499,26 +455,26 @@ header {
   transition: all 0.6s;
 }
 
-.fixed-buttons button:hover::before, .new-register a:hover::before {
+.btn-lote:hover::before, .fixed-buttons button:hover::before, .new-register a:hover::before {
   left: 100%;
 }
 
-.fixed-buttons button:hover, .new-register a:hover {
+.btn-lote:hover, .fixed-buttons button:hover, .new-register a:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.fixed-buttons button:active, .new-register a:active {
+.btn-lote:active, .fixed-buttons button:active, .new-register a:active {
   transform: translateY(0) scale(0.98);
 }
 
-.add-lot {
-  background: #28f05a;
+.btn-adicionar-lote, .add-lot {
+  background-color: #28f05a;
   color: #333;
 }
 
-.remove-lot {
-  background: #ffc066;
+.btn-remover-lote, .remove-lot {
+  background-color: #ffc066;
   color: #333;
 }
 
@@ -541,9 +497,9 @@ header {
 }
 
 /* =========================
-   MODAL (Detalhes e Edição)
+   MODAL
 ========================= */
-.modal {
+.modal, .modal-lote {
   display: none;
   position: fixed;
   z-index: 1000;
@@ -553,9 +509,11 @@ header {
   height: 100%;
   background-color: rgba(0,0,0,0.5);
   overflow: auto;
+  justify-content: center;
+  align-items: center;
 }
 
-.modal-content {
+.modal-content, .modal-lote-content {
   background-color: #fefefe;
   margin: 5% auto;
   padding: 25px;
@@ -564,6 +522,7 @@ header {
   width: 90%;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   animation: modalFadeIn 0.3s;
+  position: relative;
 }
 
 @keyframes modalFadeIn {
@@ -585,7 +544,7 @@ header {
   color: #2c3e50;
 }
 
-.close-modal {
+.close-modal, .modal-lote-close {
   color: #aaa;
   font-size: 28px;
   font-weight: bold;
@@ -593,7 +552,7 @@ header {
   transition: color 0.3s;
 }
 
-.close-modal:hover {
+.close-modal:hover, .modal-lote-close:hover {
   color: #333;
 }
 
@@ -603,7 +562,7 @@ header {
   gap: 20px;
 }
 
-.modal-photo-preview {
+.modal-photo-preview, .photo-preview {
   width: 100%;
   height: 250px;
   background-color: #f5f5f5;
@@ -615,13 +574,13 @@ header {
   border: 1px dashed #ddd;
 }
 
-.modal-photo-preview img {
+.modal-photo-preview img, .photo-preview img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
 
-.modal-photo-preview i {
+.modal-photo-preview i, .photo-preview i, .med-card-placeholder i {
   font-size: 60px;
   color: #ddd;
 }
@@ -645,7 +604,7 @@ header {
 }
 
 /* =========================
-   FORMULÁRIO DE EDIÇÃO
+   FORMULÁRIO
 ========================= */
 .form-group {
   margin-bottom: 15px;
@@ -679,29 +638,6 @@ header {
   color: #6c757d;
   margin-top: 5px;
   display: block;
-}
-
-.photo-preview {
-  height: 150px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border: 1px dashed #ccc;
-}
-
-.photo-preview img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.photo-preview i {
-  font-size: 40px;
-  color: #ddd;
 }
 
 .form-actions {
@@ -781,46 +717,29 @@ header {
 }
 
 /* =========================
-   MODAL DE LOTE
+   MODAL LOTE
 ========================= */
-.modal-lote {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 2000;
-}
-
 .modal-lote.hidden {
   display: none;
 }
 
-
-.modal-lote-close {
-  position: absolute;
-  right: 15px;
-  top: 10px;
-  font-size: 24px;
-  cursor: pointer;
-  color: #aaa;
-  transition: color 0.3s;
-}
-
-.modal-lote-close:hover {
-  color: #333;
-}
-
-.modal-lote-content h2 {
-  margin-top: 0;
-  color: #2c3e50;
+.search-group {
+  display: flex;
+  align-items: center;
+  background-color: #f2f2f2;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 20px;
+  gap: 10px;
 }
 
 .input-pesquisa {
-  padding: 10px 15px;
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
   font-size: 16px;
-  margin-bottom: 15px;
+  padding: 10px 15px;
   border-radius: 8px;
   border: 1px solid #ccc;
   width: 100%;
@@ -830,38 +749,23 @@ header {
 
 .input-pesquisa:focus {
   border-color: #6df0b1;
-  outline: none;
 }
 
-
-/* MODAL DE LOTE - MELHORADO */
-.modal-lote-content {
-  background: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  width: 600px;
-  max-width: 95vw;
-  max-height: 80vh;
-  overflow: hidden;
-  position: relative;
-  animation: modalFadeIn 0.3s;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.search-icon {
+  color: #999;
+  font-size: 18px;
 }
-
 
 .lista-medicamentos-lote {
-  flex: 1;
+  max-height: 300px;
   overflow-y: auto;
-  border: 1px solid #ccc;
-  padding: 12px 16px;
-  border-radius: 8px;
-  max-height: 400px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 6px;
   background-color: #fafafa;
 }
 
-/* Estilo moderno para os itens do lote */
 .lista-medicamentos-lote .item-medicamento {
   display: grid;
   grid-template-columns: 1fr 80px;
@@ -898,18 +802,24 @@ header {
   box-shadow: 0 0 0 2px rgba(109, 240, 177, 0.2);
 }
 
-/* Responsivo para telas pequenas */
-@media (max-width: 600px) {
-  .lista-medicamentos-lote .item-medicamento {
-    grid-template-columns: 1fr;
-    gap: 5px;
-  }
-
-  .lista-medicamentos-lote input[type="number"] {
-    max-width: 100%;
-  }
+#btnSalvarLote {
+  padding: 10px 20px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
+#btnSalvarLote:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+}
 
 /* =========================
    MENSAGENS
@@ -950,7 +860,7 @@ header {
 }
 
 /* =========================
-   ESTADOS (loading, error, etc)
+   ESTADOS
 ========================= */
 .loading, .error, .no-results {
   grid-column: 1 / -1;
@@ -978,9 +888,42 @@ header {
 }
 
 /* =========================
+   BOTÃO REMOVER
+========================= */
+.btn-remover {
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-remover:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+.stock-info {
+  font-size: 0.8em;
+  color: #666;
+  margin-left: 5px;
+}
+
+/* =========================
    RESPONSIVIDADE
 ========================= */
 @media (max-width: 768px) {
+  #gridMedicamentos {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+
   .fixed-buttons {
     flex-direction: column;
     gap: 10px;
@@ -1046,171 +989,189 @@ header {
     flex: 1;
     justify-content: center;
   }
-}
 
-.btn-remover {
-  padding: 10px 20px;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+  .lista-medicamentos-lote .item-medicamento {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
 
-.btn-remover:hover {
-  background-color: #c0392b;
-  transform: translateY(-2px);
+  .lista-medicamentos-lote input[type="number"] {
+    max-width: 100%;
+  }
 }
-
-/* Estilo para a informação de estoque */
-.stock-info {
-  font-size: 0.8em;
-  color: #666;
-  margin-left: 5px;
-}
-
-/* Estilo para o botão de remover */
-.btn-remover {
-  background-color: #e74c3c;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 15px;
-}
-
-.btn-remover:hover {
-  background-color: #c0392b;
-}
-
-/* Garantir que os inputs de remoção tenham estilo consistente */
-#listaMedicamentosRemoverLote input[type="number"] {
-  max-width: 80px;
-}
-
 
 /* =========================
-   MODAL LOTE
+   MODAIS - ESTILOS GERAIS
 ========================= */
-.modal-lote {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
+.modal.show .modal-content {
+  transform: translateY(0);
 }
 
-.modal-lote.hidden {
+.modal-header {
+  padding: 20px 25px;
+  background: linear-gradient(135deg, #6df0b1 0%, #89f8c0 100%);
+  color: white;
+  position: relative;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  color: #2c3e50;
+}
+
+.close-modal:hover {
+  color: #e74c3c;
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+/* =========================
+   MODAL DE DETALHES
+========================= */
+.info-row {
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-row strong {
+  font-size: 0.9rem;
+}
+
+.info-row span {
+  font-size: 1rem;
+}
+
+.info-row .expired-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  margin-left: 8px;
+}
+
+/* =========================
+   MODAL DE EDIÇÃO
+========================= */
+#editarMedicamentoForm .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.photo-preview.empty::before {
+  content: "Nenhuma imagem selecionada";
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.photo-preview.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   ESTILOS PARA O BOTÃO DE UPLOAD
+========================= */
+.file-upload-wrapper {
+  position: relative;
+  margin-top: 10px;
+}
+
+.file-upload-label {
+  display: inline-block;
+  padding: 10px 15px;
+  background: #f0f0f0;
+  color: #555;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+  text-align: center;
+  width: 100%;
+  border: 1px dashed #ccc;
+}
+
+.file-upload-label:hover {
+  background: #e0e0e0;
+  border-color: #aaa;
+}
+
+.file-upload-label i {
+  margin-right: 8px;
+}
+
+#editarFoto {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* =========================
+   ESTILOS ESPECÍFICOS PARA INPUTS
+========================= */
+input[type="date"] {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3e%3c/rect%3e%3cline x1='16' y1='2' x2='16' y2='6'%3e%3c/line%3e%3cline x1='8' y1='2' x2='8' y2='6'%3e%3c/line%3e%3cline x1='3' y1='10' x2='21' y2='10'%3e%3c/line%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 20px;
+  padding-right: 40px !important;
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 16px;
+  padding-right: 40px !important;
+}
+
+/* =========================
+   ESTILOS PARA ESTADOS
+========================= */
+input:disabled, select:disabled {
+  background-color: #f5f5f5 !important;
+  cursor: not-allowed;
+}
+
+input.error, select.error {
+  border-color: #e74c3c !important;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 5px;
   display: none;
 }
 
-.modal-lote-content {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  max-width: 600px;
-  width: 90%;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  position: relative;
-  animation: fadeInScale 0.3s ease-in-out;
+input.error + .error-message,
+select.error + .error-message {
+  display: block;
 }
 
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.modal-lote-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #888;
-  transition: color 0.3s;
-}
-
-.modal-lote-close:hover {
-  color: #e74c3c;
-}
-
-.modal-lote-content h2 {
-  margin-top: 0;
-  color: #333;
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-/* Grupo de pesquisa */
-.search-group {
-  display: flex;
-  align-items: center;
-  background-color: #f2f2f2;
-  border-radius: 6px;
-  padding: 8px 12px;
-  margin-bottom: 20px;
-  gap: 10px;
-}
-
-.input-pesquisa {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 16px;
-}
-
-.search-icon {
-  color: #999;
-  font-size: 18px;
-}
-
-/* Lista de medicamentos do lote */
-.lista-medicamentos-lote {
-  max-height: 300px;
-  overflow-y: auto;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 6px;
-}
-
-/* Botão de salvar */
-#btnSalvarLote {
-  padding: 10px 20px;
-  background-color: #2ecc71;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.3s;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-#btnSalvarLote:hover {
-  background-color: #27ae60;
-  transform: translateY(-2px);
-}
