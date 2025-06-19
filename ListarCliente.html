@@ -9,10 +9,7 @@
 
   <!-- Fontes e ícones -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
   <!-- Estilos -->
   <link rel="stylesheet" href="css/telaInicial.css" />
@@ -20,42 +17,38 @@
 </head>
 
 <body>
-  <header class="header">
+  <header>
     <div class="header-left">
-      <a href="telaInicial.html" class="home-icon" aria-label="Página inicial">🏠</a>
+      <a href="telaInicial.html" class="home-icon">🏠</a>
 
-      <nav class="menu-cadastros">
-        <button
-          class="btn-cadastros"
-          aria-expanded="false"
-          aria-controls="dropdown-cadastros"
-          aria-haspopup="true"
-          aria-label="Abrir menu de cadastros"
-        >
-          <span>Cadastros</span>
-        </button>
-
-        <ul id="dropdown-cadastros" class="dropdown-cadastros" role="menu" aria-hidden="true">
-          <li role="none"><a href="CadastroCliente.html" role="menuitem">Cadastro Cliente</a></li>
-          <li role="none"><a href="CadastroRemedio.html" role="menuitem">Cadastro Remédio</a></li>
-          <li role="none"><a href="CadastroPet.html" role="menuitem">Cadastro Pet</a></li>
+      <!-- Menu Cadastros -->
+      <div class="menu-cadastros">
+        <button class="btn-cadastros">Cadastros</button>
+        <ul class="dropdown-cadastros">
+          <li><a href="CadastroCliente.html">Cadastro Cliente</a></li>
+          <li><a href="CadastroRemedio.html">Cadastro Remédio</a></li>
+          <li><a href="CadastroPet.html">Cadastro Pet</a></li>
         </ul>
-      </nav>
+      </div>
+
+      <!-- Menu Listas -->
+      <div class="menu-cadastros">
+        <button class="btn-cadastros">Listas</button>
+        <ul class="dropdown-cadastros">
+          <li><a href="ListarCliente.html">Listar Cliente</a></li>
+        </ul>
+      </div>
     </div>
 
-    <button class="user-icon" aria-label="Perfil do usuário">👤</button>
+    <button class="user-icon" aria-label="Perfil do Usuário">👤</button>
   </header>
 
   <main class="main-content">
     <section class="search-section">
       <div class="search-container">
         <div class="search-input-group">
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Buscar por nome, CPF ou email..."
-            aria-label="Buscar clientes"
-          />
+          <input type="text" id="searchInput" placeholder="Buscar por nome, CPF ou email..."
+            aria-label="Buscar clientes" />
           <button id="searchButton" aria-label="Pesquisar">
             <i class="fas fa-search"></i>
           </button>
@@ -69,15 +62,8 @@
   </main>
 
   <!-- Modal de detalhes -->
-  <div
-    id="clienteModal"
-    class="modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modalClienteTitle"
-    aria-hidden="true"
-    style="display: none;"
-  >
+  <div id="clienteModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalClienteTitle"
+    aria-hidden="true" style="display: none;">
     <div class="modal-content">
       <button class="close-modal" aria-label="Fechar modal">&times;</button>
 
@@ -129,15 +115,8 @@
   <div id="message-container" role="status" aria-live="polite"></div>
 
   <!-- Modal de Edição -->
-  <div
-    id="editClienteModal"
-    class="modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modalEditTitle"
-    aria-hidden="true"
-    style="display: none;"
-  >
+  <div id="editClienteModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalEditTitle"
+    aria-hidden="true" style="display: none;">
     <div class="modal-content">
       <button class="close-edit-modal close-modal" aria-label="Fechar modal">&times;</button>
 
@@ -152,16 +131,8 @@
         </div>
         <div class="info-row">
           <label for="editCpf"><strong>CPF:</strong></label>
-          <input
-            type="text"
-            id="editCpf"
-            name="cpf"
-            required
-            maxlength="11"
-            pattern="\d{11}"
-            title="CPF deve conter 11 números"
-            autocomplete="off"
-          />
+          <input type="text" id="editCpf" name="cpf" required maxlength="11" pattern="\d{11}"
+            title="CPF deve conter 11 números" autocomplete="off" />
         </div>
         <div class="info-row">
           <label for="editDataNasc"><strong>Data de Nascimento:</strong></label>

@@ -16,24 +16,30 @@
 </head>
 
 <body>
-  <header class="header">
+  <header>
     <div class="header-left">
-      <a href="telaInicial.html" class="home-icon" aria-label="Página inicial">🏠</a>
+      <a href="telaInicial.html" class="home-icon">🏠</a>
 
-      <nav class="menu-cadastros">
-        <button class="btn-cadastros" aria-expanded="false" aria-controls="dropdown-cadastros">
-          <span>Cadastros</span>
-        </button>
-
-        <ul id="dropdown-cadastros" class="dropdown-cadastros" role="menu">
-          <li role="none"><a href="CadastroCliente.html" role="menuitem">Cadastro Cliente</a></li>
-          <li role="none"><a href="CadastroRemedio.html" role="menuitem">Cadastro Remédio</a></li>
-          <li role="none"><a href="CadastroPet.html" role="menuitem">Cadastro Pet</a></li>
+      <!-- Menu Cadastros -->
+      <div class="menu-cadastros">
+        <button class="btn-cadastros">Cadastros</button>
+        <ul class="dropdown-cadastros">
+          <li><a href="CadastroCliente.html">Cadastro Cliente</a></li>
+          <li><a href="CadastroRemedio.html">Cadastro Remédio</a></li>
+          <li><a href="CadastroPet.html">Cadastro Pet</a></li>
         </ul>
-      </nav>
+      </div>
+
+      <!-- Menu Listas -->
+      <div class="menu-cadastros">
+        <button class="btn-cadastros">Listas</button>
+        <ul class="dropdown-cadastros">
+          <li ><a href="ListarCliente.html">Listar Cliente</a></li>
+        </ul>
+      </div>
     </div>
 
-    <button class="user-icon" aria-label="Perfil do usuário">👤</button>
+    <button class="user-icon" aria-label="Perfil do Usuário">👤</button>
   </header>
 
   <main class="main-content">

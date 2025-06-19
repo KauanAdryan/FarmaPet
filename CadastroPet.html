@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,21 +8,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/cadastros.css" />
 </head>
+
 <body id="CadastroPet">
-<header>
-  <div class="header-left">
-    <a href="telaInicial.html" class="home-icon">🏠</a>
-    <div class="menu-cadastros">
-      <button class="btn-cadastros">Cadastros</button>
-      <ul class="dropdown-cadastros">
-        <li><a href="CadastroCliente.html">Cadastro Cliente</a></li>
-        <li><a href="CadastroRemedio.html">Cadastro Remédio</a></li>
-        <li><a href="CadastroPet.html">Cadastro Pet</a></li>
-      </ul>
+
+
+  <header>
+    <div class="header-left">
+      <a href="telaInicial.html" class="home-icon">🏠</a>
+
+      <!-- Menu Cadastros -->
+      <div class="menu-cadastros">
+        <button class="btn-cadastros">Cadastros</button>
+        <ul class="dropdown-cadastros">
+          <li><a href="CadastroCliente.html">Cadastro Cliente</a></li>
+          <li><a href="CadastroRemedio.html">Cadastro Remédio</a></li>
+          <li><a href="CadastroPet.html">Cadastro Pet</a></li>
+        </ul>
+      </div>
+
+      <!-- Menu Listas -->
+      <div class="menu-cadastros">
+        <button class="btn-cadastros">Listas</button>
+        <ul class="dropdown-cadastros">
+          <li><a href="ListarCliente.html">Listar Cliente</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
-  <div class="user-icon">👤</div>
-</header>
+
+    <button class="user-icon" aria-label="Perfil do Usuário">👤</button>
+  </header>
 
   <main>
     <form class="form-cadastro">
@@ -60,38 +75,12 @@
             <option value="" disabled selected>Selecione o dono</option>
             <!-- Os clientes serão carregados aqui via JavaScript -->
           </select>
-      </div>
+        </div>
       </div>
 
       <button type="submit" class="btn-cadastrar">Cadastrar Pet</button>
     </form>
   </main>
   <script src="js/scriptCadastros.js"></script>
-  <script>
-    // Script para toggle dropdown menu
-    const btnCadastros = document.querySelector('.btn-cadastros');
-    const dropdown = document.querySelector('.dropdown-cadastros');
 
-    btnCadastros.addEventListener('click', () => {
-      const expanded = btnCadastros.getAttribute('aria-expanded') === 'true';
-      btnCadastros.setAttribute('aria-expanded', !expanded);
-      if (!expanded) {
-        dropdown.removeAttribute('hidden');
-        dropdown.classList.add('show');
-      } else {
-        dropdown.setAttribute('hidden', '');
-        dropdown.classList.remove('show');
-      }
-    });
-
-    // Fecha dropdown ao clicar fora
-    document.addEventListener('click', (e) => {
-      if (!btnCadastros.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.setAttribute('hidden', '');
-        dropdown.classList.remove('show');
-        btnCadastros.setAttribute('aria-expanded', 'false');
-      }
-    });
-  </script>
-</body>
 </html>

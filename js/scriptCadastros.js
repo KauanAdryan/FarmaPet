@@ -1,10 +1,61 @@
+// Configuração inicial
 const apiBaseUrl = 'http://localhost:8080';
-
 
 // Função helper para pegar elemento
 function getElement(selector) {
   return document.querySelector(selector);
 }
+
+// ==============================================
+// CONFIGURAÇÃO DO MENU DROPDOWN
+// ==============================================
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Configuração dos menus dropdown
+  const menuButtons = document.querySelectorAll('.btn-cadastros');
+  
+  menuButtons.forEach(button => {
+    const dropdown = button.nextElementSibling;
+    
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const expanded = this.getAttribute('aria-expanded') === 'true';
+      
+      // Fecha todos os outros menus primeiro
+      document.querySelectorAll('.dropdown-cadastros').forEach(menu => {
+        if (menu !== dropdown) {
+          menu.setAttribute('hidden', '');
+          menu.classList.remove('show');
+          menu.previousElementSibling.setAttribute('aria-expanded', 'false');
+        }
+      });
+      
+      // Alterna o menu atual
+      this.setAttribute('aria-expanded', !expanded);
+      if (!expanded) {
+        dropdown.removeAttribute('hidden');
+        dropdown.classList.add('show');
+      } else {
+        dropdown.setAttribute('hidden', '');
+        dropdown.classList.remove('show');
+      }
+    });
+    
+    // Previne que o menu feche ao clicar dentro dele
+    dropdown.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  });
+
+  // Fecha menus ao clicar fora
+  document.addEventListener('click', function() {
+    document.querySelectorAll('.dropdown-cadastros').forEach(menu => {
+      menu.setAttribute('hidden', '');
+      menu.classList.remove('show');
+      menu.previousElementSibling.setAttribute('aria-expanded', 'false');
+    });
+  });
+});
 
 // Função para converter arquivo para base64 (para enviar a imagem no JSON)
 function toBase64(file) {
@@ -15,6 +66,15 @@ function toBase64(file) {
     reader.onerror = error => reject(error);
   });
 }
+
+// Função auxiliar para formatar CPF
+function formatarCPF(cpf) {
+  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+}
+
+// ==============================================
+// RESTANTE DO SEU CÓDIGO (mantido exatamente como está)
+// ==============================================
 
 // Preview da imagem ao escolher arquivo
 const fotoInput = getElement('#foto');
@@ -118,6 +178,7 @@ if (medicamentoForm) {
     }
   });
 }
+
 
 // Função para carregar clientes
 async function carregarClientes() {

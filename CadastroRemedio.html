@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,19 +8,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/cadastros.css" />
 </head>
+
 <body id="CadastroRemedio">
   <header>
     <div class="header-left">
-      <a href="telaInicial.html" class="home-icon" aria-label="Página Inicial">🏠</a>
+      <a href="telaInicial.html" class="home-icon">🏠</a>
 
-      <nav class="menu-cadastros" aria-label="Menu de Cadastros">
-        <button class="btn-cadastros" aria-haspopup="true" aria-expanded="false">Cadastros</button>
-        <ul class="dropdown-cadastros" role="menu" hidden>
-          <li role="none"><a href="CadastroCliente.html" role="menuitem">Cadastro Cliente</a></li>
-          <li role="none"><a href="CadastroRemedio.html" role="menuitem">Cadastro Remédio</a></li>
-          <li role="none"><a href="CadastroPet.html" role="menuitem">Cadastro Pet</a></li>
+      <!-- Menu Cadastros -->
+      <div class="menu-cadastros">
+        <button class="btn-cadastros">Cadastros</button>
+        <ul class="dropdown-cadastros">
+          <li><a href="CadastroCliente.html">Cadastro Cliente</a></li>
+          <li><a href="CadastroRemedio.html">Cadastro Remédio</a></li>
+          <li><a href="CadastroPet.html">Cadastro Pet</a></li>
         </ul>
-      </nav>
+      </div>
+
+      <!-- Menu Listas -->
+      <div class="menu-cadastros">
+        <button class="btn-cadastros">Listas</button>
+        <ul class="dropdown-cadastros">
+          <li><a href="ListarCliente.html">Listar Cliente</a></li>
+        </ul>
+      </div>
     </div>
 
     <button class="user-icon" aria-label="Perfil do Usuário">👤</button>
@@ -47,7 +58,8 @@
       <div class="input-row">
         <div class="input-group">
           <label for="principio_ativo">Princípio ativo:</label>
-          <input type="text" placeholder="Princípio ativo do medicamento" id="principio_ativo" name="principio_ativo" required />
+          <input type="text" placeholder="Princípio ativo do medicamento" id="principio_ativo" name="principio_ativo"
+            required />
         </div>
         <div class="input-group">
           <label for="peso_indicado">Peso indicado (kg):</label>
@@ -69,7 +81,8 @@
       <div class="input-row">
         <div class="input-group">
           <label for="especie_indicada">Espécie indicada:</label>
-          <input type="text" placeholder="Espécie indicada do medicamento" id="especie_indicada" name="especie_indicada" />
+          <input type="text" placeholder="Espécie indicada do medicamento" id="especie_indicada"
+            name="especie_indicada" />
         </div>
         <div class="input-group">
           <label for="tipo_uso">Uso interno ou externo:</label>
@@ -100,7 +113,8 @@
         <div class="input-group file-upload">
           <label for="foto">Foto do medicamento:</label>
           <input type="file" id="foto" name="foto" accept="image/*" />
-          <div id="photoPreview" aria-live="polite" aria-atomic="true" style="margin-top:10px; font-size: 2rem;">📷</div>
+          <div id="photoPreview" aria-live="polite" aria-atomic="true" style="margin-top:10px; font-size: 2rem;">📷
+          </div>
         </div>
       </div>
 
@@ -109,31 +123,6 @@
   </main>
 
   <script src="js/scriptCadastros.js"></script>
-  <script>
-    // Script para toggle dropdown menu
-    const btnCadastros = document.querySelector('.btn-cadastros');
-    const dropdown = document.querySelector('.dropdown-cadastros');
-
-    btnCadastros.addEventListener('click', () => {
-      const expanded = btnCadastros.getAttribute('aria-expanded') === 'true';
-      btnCadastros.setAttribute('aria-expanded', !expanded);
-      if (!expanded) {
-        dropdown.removeAttribute('hidden');
-        dropdown.classList.add('show');
-      } else {
-        dropdown.setAttribute('hidden', '');
-        dropdown.classList.remove('show');
-      }
-    });
-
-    // Fecha dropdown ao clicar fora
-    document.addEventListener('click', (e) => {
-      if (!btnCadastros.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.setAttribute('hidden', '');
-        dropdown.classList.remove('show');
-        btnCadastros.setAttribute('aria-expanded', 'false');
-      }
-    });
-  </script>
 </body>
+
 </html>
