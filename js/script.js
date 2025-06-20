@@ -16,7 +16,6 @@ let medicamentosLista = [];
 // Inicialização principal
 document.addEventListener('DOMContentLoaded', function () {
   initModals();
-  initDropdownMenu();
   setupEventListeners();
   getMedicamentos();
 
@@ -158,37 +157,6 @@ function setupEventListeners() {
   if (removerLoteButton) {
     removerLoteButton.addEventListener('click', abrirModalRemoverLote);
   }
-}
-
-// Menu dropdown
-function initDropdownMenu() {
-  const dropdownButtons = document.querySelectorAll('.btn-cadastros');
-
-  dropdownButtons.forEach(button => {
-    button.addEventListener('click', function (e) {
-      e.stopPropagation();
-      const dropdown = this.nextElementSibling;
-      const isOpen = dropdown.style.display === 'block';
-
-      document.querySelectorAll('.dropdown-cadastros').forEach(d => {
-        d.style.display = 'none';
-      });
-
-      if (!isOpen) dropdown.style.display = 'block';
-    });
-  });
-
-  document.addEventListener('click', function () {
-    document.querySelectorAll('.dropdown-cadastros').forEach(dropdown => {
-      dropdown.style.display = 'none';
-    });
-  });
-
-  document.querySelectorAll('.dropdown-cadastros').forEach(dropdown => {
-    dropdown.addEventListener('click', function (e) {
-      e.stopPropagation();
-    });
-  });
 }
 
 // Carrega medicamentos da API

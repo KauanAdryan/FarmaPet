@@ -6,57 +6,6 @@ function getElement(selector) {
   return document.querySelector(selector);
 }
 
-// ==============================================
-// CONFIGURAÇÃO DO MENU DROPDOWN
-// ==============================================
-
-document.addEventListener('DOMContentLoaded', function() {
-  // Configuração dos menus dropdown
-  const menuButtons = document.querySelectorAll('.btn-cadastros');
-  
-  menuButtons.forEach(button => {
-    const dropdown = button.nextElementSibling;
-    
-    button.addEventListener('click', function(e) {
-      e.stopPropagation();
-      const expanded = this.getAttribute('aria-expanded') === 'true';
-      
-      // Fecha todos os outros menus primeiro
-      document.querySelectorAll('.dropdown-cadastros').forEach(menu => {
-        if (menu !== dropdown) {
-          menu.setAttribute('hidden', '');
-          menu.classList.remove('show');
-          menu.previousElementSibling.setAttribute('aria-expanded', 'false');
-        }
-      });
-      
-      // Alterna o menu atual
-      this.setAttribute('aria-expanded', !expanded);
-      if (!expanded) {
-        dropdown.removeAttribute('hidden');
-        dropdown.classList.add('show');
-      } else {
-        dropdown.setAttribute('hidden', '');
-        dropdown.classList.remove('show');
-      }
-    });
-    
-    // Previne que o menu feche ao clicar dentro dele
-    dropdown.addEventListener('click', function(e) {
-      e.stopPropagation();
-    });
-  });
-
-  // Fecha menus ao clicar fora
-  document.addEventListener('click', function() {
-    document.querySelectorAll('.dropdown-cadastros').forEach(menu => {
-      menu.setAttribute('hidden', '');
-      menu.classList.remove('show');
-      menu.previousElementSibling.setAttribute('aria-expanded', 'false');
-    });
-  });
-});
-
 // Função para converter arquivo para base64 (para enviar a imagem no JSON)
 function toBase64(file) {
   return new Promise((resolve, reject) => {
@@ -376,189 +325,90 @@ document.getElementById('clienteForm').addEventListener('submit', async function
 
   try {
     btnSubmit.disabled = true;
-    btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cadastrando...';
+    btnSubmit.innerHTML = '<a-i class="fas fspinner fa-spin"></i> Cadastrando...</a-i>';
 
-    // Primeiro cadastra o endereço
-    const enderecoResponse = await fetch(`${apiBaseUrl}/enderecos`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        cep: document.getElementById('cep').value.replace(/\D/g, ''),
-        uf: uf,
-        cidade: document.getElementById('cidade').value,
-        bairro: document.getElementById('bairro').value,
-        rua: document.getElementById('rua').value,
-        numero: document.getElementById('numero').value,
-        complemento: document.getElementById('complemento').value || null
-      })
-    });
+//===================================================================================
+  // Cadastro bairro
+const bairroResponse = await fetch(`${apiBaseUrl}/model_bairro`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    descricao: document.getElementById('descricao').value.trim()
+  })
+});
 
-    if (!enderecoResponse.ok) {
-      const errorData = await enderecoResponse.json();
-      throw new Error(errorData.message || 'Erro ao cadastrar endereço');
+//===================================================================================
+  // Cadastro UF
+const ufResponse = await fetch(`${apiBaseUrl}/model_uf`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    sigla: document.getElementById('sigla').value.trim().toUpperCase(), // Ex: "SC"
+    descricao: document.getElementById('descricao').value.trim() // Ex: "Santa Catarina"
+  })
+});
+
+//===================================================================================    
+  // Cadastro cidade
+const cidadeResponse = await fetch(`${apiBaseUrl}/model_cidade`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    descricao: document.getElementById('descricao').value.trim(),
+    uf: {
+      idUf: parseInt(document.getElementById('id_uf').value) // ID da UF relacionada
     }
+  })
+});
 
-    const enderecoResult = await enderecoResponse.json();
+//===================================================================================
+    //Cadastro rua
+const ruaResponse = await fetch(`${apiBaseUrl}/model_rua`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    descricao: document.getElementById('descricao').value.trim()
+  })
+});
 
+
+//===================================================================================
+    //Cadastro endereço
+const enderecoResponse = await fetch(`${apiBaseUrl}/model_endereco`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    cep: document.getElementById('cep').value.replace(/\D/g, ''),
+    numero: document.getElementById('numero').value,
+    ruaId: parseInt(document.getElementById('id_rua').value),
+    bairroId: parseInt(document.getElementById('id_bairro').value),
+    cidadeId: parseInt(document.getElementById('id_cidade').value), // Campo corrigido
+    ufId: parseInt(document.getElementById('id_uf').value),
+    complemento: document.getElementById('complemento').value || null
+  })
+});
+
+  //===================================================================================
     // Agora cadastra o cliente
-    const clienteResponse = await fetch(`${apiBaseUrl}/cliente`, {
+    const clienteResponse = await fetch(`${apiBaseUrl}/pessoa`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         nome: document.getElementById('nome').value,
-        cpf: cpf,
-        dataNasc: document.getElementById('dataNasc').value,
-        email: document.getElementById('email').value,
-        telefone: document.getElementById('telefone').value.replace(/\D/g, ''),
-        enderecoId: enderecoResult.idEndereco
-      })
-    });
-
-    if (!clienteResponse.ok) {
-      const errorData = await clienteResponse.json();
-      throw new Error(errorData.message || 'Erro ao cadastrar cliente');
-    }
-
-    const result = await clienteResponse.json();
-    alert('Cliente cadastrado com sucesso!');
-    this.reset();
-
-  } catch (error) {
-    console.error('Erro no cadastro:', error);
-    alert(`Erro: ${error.message}`);
-  } finally {
-    btnSubmit.disabled = false;
-    btnSubmit.innerHTML = originalText;
-  }
-});
-
-// Máscaras para os campos
-document.getElementById('cpf').addEventListener('input', function(e) {
-  let value = e.target.value.replace(/\D/g, '');
-  if (value.length > 3) value = value.replace(/^(\d{3})/, '$1.');
-  if (value.length > 6) value = value.replace(/^(\d{3})\.(\d{3})/, '$1.$2.');
-  if (value.length > 9) value = value.replace(/^(\d{3})\.(\d{3})\.(\d{3})/, '$1.$2.$3-');
-  e.target.value = value.substring(0, 14);
-});
-
-document.getElementById('telefone').addEventListener('input', function(e) {
-  let value = e.target.value.replace(/\D/g, '');
-  if (value.length > 2) value = value.replace(/^(\d{2})/, '($1) ');
-  if (value.length > 10) value = value.replace(/^(\(\d{2}\)\s\d{5})/, '$1-');
-  e.target.value = value.substring(0, 15);
-});
-
-document.getElementById('cep').addEventListener('input', function(e) {
-  let value = e.target.value.replace(/\D/g, '');
-  if (value.length > 5) value = value.replace(/^(\d{5})/, '$1-');
-  e.target.value = value.substring(0, 9);
-});
-
-// Busca de CEP (opcional)
-document.getElementById('buscarCep').addEventListener('click', async function() {
-  const cep = document.getElementById('cep').value.replace(/\D/g, '');
-  
-  if (cep.length !== 8) {
-    alert('CEP inválido! Deve conter 8 dígitos.');
-    return;
-  }
-
-  try {
-    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-    const data = await response.json();
-    
-    if (data.erro) {
-      throw new Error('CEP não encontrado');
-    }
-    
-    // Preenche automaticamente os campos
-    document.getElementById('uf').value = data.uf || '';
-    document.getElementById('cidade').value = data.localidade || '';
-    document.getElementById('bairro').value = data.bairro || '';
-    document.getElementById('rua').value = data.logradouro || '';
-    document.getElementById('numero').focus();
-    
-  } catch (error) {
-    console.error('Erro ao buscar CEP:', error);
-    alert(`Erro: ${error.message}`);
-  }
-});
-
-// Cadastro de Cliente
-document.getElementById('clienteForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-
-  // Validação básica
-  const requiredFields = ['nome', 'cpf', 'dataNasc', 'email', 'telefone', 
-                        'uf', 'cidade', 'bairro', 'rua', 'numero', 'cep'];
-  
-  for (const field of requiredFields) {
-    const elem = document.getElementById(field);
-    if (!elem || !elem.value.trim()) {
-      alert(`Por favor, preencha o campo ${field}!`);
-      return;
-    }
-  }
-
-  // Validação de CPF
-  const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
-  if (cpf.length !== 11) {
-    alert('CPF inválido! Deve conter 11 dígitos.');
-    return;
-  }
-
-  // Validação de UF (2 caracteres)
-  const uf = document.getElementById('uf').value;
-  if (uf.length !== 2) {
-    alert('UF inválido! Deve conter exatamente 2 caracteres.');
-    return;
-  }
-
-  const btnSubmit = document.querySelector('.btn-cadastrar');
-  const originalText = btnSubmit.innerHTML;
-
-  try {
-    btnSubmit.disabled = true;
-    btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cadastrando...';
-
-    // Primeiro cadastra o endereço
-    const enderecoResponse = await fetch(`${apiBaseUrl}/model_endereco`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        cep: document.getElementById('cep').value.replace(/\D/g, ''),
-        uf: uf,
-        cidade: document.getElementById('cidade').value,
-        bairro: document.getElementById('bairro').value,
-        rua: document.getElementById('rua').value,
-        numero: document.getElementById('numero').value,
-        complemento: document.getElementById('complemento').value || null
-      })
-    });
-
-    if (!enderecoResponse.ok) {
-      const errorData = await enderecoResponse.json();
-      throw new Error(errorData.message || 'Erro ao cadastrar endereço');
-    }
-
-    const enderecoResult = await enderecoResponse.json();
-
-    // Agora cadastra o cliente
-    const clienteResponse = await fetch(`${apiBaseUrl}/cliente`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        nome: document.getElementById('nome').value,
-        cpf: cpf,
-        dataNasc: document.getElementById('dataNasc').value,
+        cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
+        dataNasc: document.getElementById('data_nasc').value,
         email: document.getElementById('email').value,
         telefone: document.getElementById('telefone').value.replace(/\D/g, ''),
         enderecoId: enderecoResult.idEndereco

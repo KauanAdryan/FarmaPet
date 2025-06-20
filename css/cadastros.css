@@ -8,27 +8,16 @@ body {
 /* Header e Navegação */
 header {
   background-color: #6df0b1;
-  display: flex;
-  justify-content: space-between; /* Espaço entre itens esquerda e direita */
-  align-items: center;
-  padding: 10px 30px;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 20px;
 }
 
 .home-icon {
   display: inline-block;
-  margin-right: 20px;
   font-size: 24px;
   cursor: pointer;
   transition: all 0.3s ease;
   color: #000;
-  line-height: 0; /* Remove o espaço abaixo do emoji */
-  vertical-align: middle; /* Mantém o alinhamento correto */
+  line-height: 0;
+  vertical-align: middle;
 }
 
 .home-icon:hover {
@@ -37,11 +26,6 @@ header {
 }
 
 /* Menu Cadastros */
-.menu-cadastros {
-  position: relative;
-  display: inline-block;
-}
-
 .btn-cadastros {
   background: none;
   border: none;
@@ -51,11 +35,7 @@ header {
   transform-origin: center;
   color: #000;
   user-select: none;
-}
-
-.btn-cadastros::after {
-  content: ' ▼';
-  font-size: 0.8em;
+  padding: 0.5rem 1rem;
 }
 
 .btn-cadastros:hover {
@@ -63,48 +43,19 @@ header {
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.dropdown-cadastros {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: white;
+.dropdown-menu {
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  padding: 0;
-  margin: 5px 0 0 0;
-  list-style: none;
-  min-width: 180px;
-  z-index: 1000;
+  border: none;
   animation: fadeIn 0.3s ease-in-out;
 }
 
-.dropdown-cadastros.show {
-  display: block;
-}
-
-.dropdown-cadastros li {
-  border-bottom: 1px solid #eee;
-  transition: all 0.2s ease;
-}
-
-.dropdown-cadastros li:last-child {
-  border-bottom: none;
-}
-
-.dropdown-cadastros li:hover {
-  transform: translateX(5px);
-}
-
-.dropdown-cadastros li a {
-  display: block;
+.dropdown-item {
   padding: 10px 15px;
-  text-decoration: none;
-  color: #000;
   transition: all 0.2s ease;
 }
 
-.dropdown-cadastros li a:hover {
+.dropdown-item:hover {
   background-color: #f0f0f0;
   transform: translateX(5px);
 }
@@ -134,55 +85,23 @@ header {
   background-color: #6a6a6a8c;
 }
 
-/* Main */
-main {
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-}
-
 /* Formulários */
-.form-cadastro, .form-remedio {
+.form-cadastro {
   background-color: #fff;
   border: 1px solid #777;
   border-radius: 6px;
   padding: 25px 30px;
-  width: 600px;
   box-sizing: border-box;
 }
 
-.form-cadastro h2, .form-remedio h2 {
-  text-align: center;
+.form-cadastro h2 {
   font-weight: 600;
-  margin-bottom: 25px;
 }
 
-.input-row {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 15px;
-}
-
-.input-group {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.input-group label {
-  margin-bottom: 6px;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.input-group input,
-.input-group select {
+.form-control, .form-select {
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  font-size: 14px;
-  box-sizing: border-box;
-  width: 100%;
 }
 
 /* Botão Cadastrar */
@@ -193,9 +112,6 @@ main {
   border-radius: 8px;
   padding: 12px 0;
   width: 200px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
   font-size: 18px;
   font-weight: 500;
   cursor: pointer;
@@ -225,6 +141,21 @@ main {
 
 .btn-cadastrar:active {
   transform: scale(0.95);
+}
+
+/* Botão Buscar CEP */
+.btn-buscar-cep {
+  background-color: #6df0b1;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-buscar-cep:hover {
+  background-color: #5ad89d;
 }
 
 /* Mensagens de alerta */
@@ -265,38 +196,13 @@ main {
   to { transform: rotate(360deg); }
 }
 
-/* Seções da tela inicial */
-.section-header {
-  grid-column: 1 / -1;
-  margin: 20px 0 10px;
-  padding-bottom: 5px;
-  border-bottom: 2px solid #6df0b1;
-}
-
-.loading {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 20px;
-  font-style: italic;
-  color: #666;
-}
-
-/* Esconde campo estoque */
-#quantidade_estoque {
-  display: none;
-}
-
-/* Preview da foto */
-#photoPreview {
-  max-width: 180px;
-  max-height: 180px;
-  border-radius: 10px;
-  box-shadow: 0 3px 7px rgba(0,0,0,0.15);
-  overflow: hidden;
-}
-
-#photoPreview img {
-  width: 100%;
-  height: auto;
-  display: block;
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .form-cadastro {
+    padding: 20px 15px;
+  }
+  
+  .btn-cadastrar {
+    width: 100%;
+  }
 }
