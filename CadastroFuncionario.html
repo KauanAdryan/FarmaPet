@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tela Cadastro Funcionário</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/cadastros.css" />
+</head>
+
+<body id="CadastroFuncionario">
+  <header class="header-bg py-2 px-3 d-flex justify-content-between align-items-center shadow-sm">
+    <div class="d-flex align-items-center gap-3">
+      <a href="telaInicial.html" class="home-icon">🏠</a>
+
+      <!-- Menu Cadastros -->
+      <div class="dropdown">
+        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownCadastros" data-bs-toggle="dropdown" aria-expanded="false">
+          Cadastros
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownCadastros">
+          <li><a class="dropdown-item" href="CadastroCliente.html">Cadastro Cliente</a></li>
+          <li><a class="dropdown-item" href="CadastroRemedio.html">Cadastro Remédio</a></li>
+          <li><a class="dropdown-item" href="CadastroPet.html">Cadastro Pet</a></li>
+          <li><a class="dropdown-item" href="CadastroFuncionario.html">Cadastro Funcionário</a></li>
+        </ul>
+      </div>
+
+      <!-- Menu Listas -->
+      <div class="dropdown">
+        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownListas" data-bs-toggle="dropdown" aria-expanded="false">
+          Listas
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownListas">
+          <li><a class="dropdown-item" href="ListarCliente.html">Listar Cliente</a></li>
+          <li><a class="dropdown-item" href="ListarFuncionario.html">Listar Funcionário</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="user-icon btn p-0 dropdown-toggle" type="button" id="dropdownUsuario" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Perfil do Usuário">
+        👤
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUsuario">
+        <li><a class="dropdown-item text-danger" href="login.html" id="btnLogout"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="py-4">
+    <div class="container">
+      <form id="funcionarioForm" class="form-cadastro">
+        <h2 class="text-center mb-4">Dados Pessoais</h2>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label for="nome" class="form-label">Nome Completo:</label>
+            <input type="text" class="form-control" id="nome" required minlength="3" />
+            <div class="invalid-feedback">Por favor, insira um nome válido (mínimo 3 caracteres)</div>
+          </div>
+          <div class="col-md-6">
+            <label for="cpf" class="form-label">CPF:</label>
+            <input type="text" class="form-control" id="cpf" placeholder="000.000.000-00" required />
+            <div class="invalid-feedback">Por favor, insira um CPF válido</div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label for="dataNasc" class="form-label">Data de Nascimento:</label>
+            <input type="date" class="form-control" id="dataNasc" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" />
+            <div class="invalid-feedback">O funcionário deve ter pelo menos 18 anos</div>
+          </div>
+          <div class="col-md-6">
+            <label for="telefone" class="form-label">Telefone:</label>
+            <input type="text" class="form-control" id="telefone" placeholder="(00) 00000-0000" required />
+            <div class="invalid-feedback">Por favor, insira um telefone válido</div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label for="email" class="form-label">E-mail:</label>
+            <input type="email" class="form-control" id="email" required />
+            <div class="invalid-feedback">Por favor, insira um e-mail válido</div>
+          </div>
+          <div class="col-md-6">
+            <label for="tipoCadastro" class="form-label">Tipo de Cadastro:</label>
+            <select class="form-select" id="tipoCadastro" required>
+              <option value="" selected disabled>Selecione...</option>
+              <option value="1">Administrador</option>
+              <option value="2">Funcionário</option>
+            </select>
+            <div class="invalid-feedback">Por favor, selecione um tipo de cadastro</div>
+          </div>
+        </div>
+
+        <h2 class="text-center mb-4">Dados de Acesso</h2>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label for="nomeUsuario" class="form-label">Nome de Usuário:</label>
+            <input type="text" class="form-control" id="nomeUsuario" required minlength="4" />
+            <div class="invalid-feedback">O nome de usuário deve ter pelo menos 4 caracteres</div>
+          </div>
+          <div class="col-md-6">
+            <label for="senha" class="form-label">Senha:</label>
+            <input type="password" class="form-control" id="senha" required minlength="6" />
+            <div class="invalid-feedback">A senha deve ter pelo menos 6 caracteres</div>
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label for="confirmarSenha" class="form-label">Confirmar Senha:</label>
+            <input type="password" class="form-control" id="confirmarSenha" required minlength="6" />
+            <div class="invalid-feedback">As senhas não coincidem</div>
+          </div>
+          <div class="col-md-6 d-flex align-items-end">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="usuarioAtivo" checked>
+              <label class="form-check-label" for="usuarioAtivo">
+                Usuário Ativo
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="text-center mb-4">Endereço</h2>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label for="cep" class="form-label">CEP:</label>
+            <input type="text" class="form-control" id="cep" placeholder="00000-000" required />
+            <div class="invalid-feedback">Por favor, insira um CEP válido</div>
+          </div>
+          <div class="col-md-6 d-flex align-items-end">
+            <button type="button" id="buscarCep" class="btn-buscar-cep">Buscar CEP</button>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-2 mb-3 mb-md-0">
+            <label for="uf" class="form-label">Estado (UF):</label>
+            <input type="text" class="form-control" id="uf" maxlength="2" placeholder="SP" required />
+            <div class="invalid-feedback">Por favor, insira a UF</div>
+          </div>
+          <div class="col-md-10">
+            <label for="cidade" class="form-label">Cidade:</label>
+            <input type="text" class="form-control" id="cidade" required />
+            <div class="invalid-feedback">Por favor, insira a cidade</div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label for="bairro" class="form-label">Bairro:</label>
+            <input type="text" class="form-control" id="bairro" required />
+            <div class="invalid-feedback">Por favor, insira o bairro</div>
+          </div>
+          <div class="col-md-6">
+            <label for="rua" class="form-label">Rua:</label>
+            <input type="text" class="form-control" id="rua" required />
+            <div class="invalid-feedback">Por favor, insira a rua</div>
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-3 mb-3 mb-md-0">
+            <label for="numero" class="form-label">Número:</label>
+            <input type="text" class="form-control" id="numero" required />
+            <div class="invalid-feedback">Por favor, insira o número</div>
+          </div>
+          <div class="col-md-9">
+            <label for="complemento" class="form-label">Complemento:</label>
+            <input type="text" class="form-control" id="complemento" />
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button type="submit" class="btn-cadastrar">Cadastrar Funcionário</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Bootstrap JS Bundle com Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Proteção de Autenticação Global -->
+  <script src="js/auth-protection.js"></script>
+  <!-- Scripts Personalizados -->
+  <script type="module" src="js/CadastroFuncionario.js"></script>
+</body>
+</html>
