@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tela Cadastro Pet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/cadastros.css" />
+</head>
+
+<body id="CadastroPet">
+  <header class="header-bg py-2 px-3 d-flex justify-content-between align-items-center shadow-sm">
+    <div class="d-flex align-items-center gap-3">
+      <a href="telaInicial.html" class="home-icon">🏠</a>
+
+      <!-- Menu Cadastros -->
+      <div class="dropdown">
+        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownCadastros" data-bs-toggle="dropdown" aria-expanded="false">
+          Cadastros
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownCadastros">
+          <li><a class="dropdown-item" href="CadastroCliente.html">Cadastro Cliente</a></li>
+          <li><a class="dropdown-item" href="CadastroRemedio.html">Cadastro Remédio</a></li>
+          <li><a class="dropdown-item" href="CadastroPet.html">Cadastro Pet</a></li>
+          <li><a class="dropdown-item" href="CadastroFuncionario.html">Cadastro Funcionário</a></li>
+        </ul>
+      </div>
+
+      <!-- Menu Listas -->
+      <div class="dropdown">
+        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownListas" data-bs-toggle="dropdown" aria-expanded="false">
+          Listas
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownListas">
+          <li><a class="dropdown-item" href="ListarCliente.html">Listar Cliente</a></li>
+          <li><a class="dropdown-item" href="ListarFuncionario.html">Listar Funcionário</a></li>
+        </ul>
+      </div>
+    </div>
+
+<!-- Substitua o botão do ícone de usuário por este código -->
+<div class="dropdown">
+  <button class="user-icon btn p-0 dropdown-toggle" type="button" id="dropdownUsuario" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Perfil do Usuário">
+    👤
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUsuario">
+    <li><a class="dropdown-item text-danger" href="login.html" id="btnLogout"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+  </ul>
+</div>
+  </header>
+
+  <main class="py-4">
+    <div class="container">
+      <form class="form-cadastro">
+        <h2 class="text-center mb-4">Preencha as informações do Pet</h2>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label for="nome" class="form-label">Nome do Pet:</label>
+            <input type="text" class="form-control" placeholder="Digite o nome do pet" id="nome" required />
+          </div>
+          <div class="col-md-6">
+            <label for="especie" class="form-label">Espécie:</label>
+            <input type="text" class="form-control" placeholder="Digite a espécie do pet" id="especie" required />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label for="raca" class="form-label">Raça:</label>
+            <input type="text" class="form-control" id="raca" placeholder="Digite a raça do pet" required />
+          </div>
+          <div class="col-md-6">
+            <label for="idade" class="form-label">Idade (anos):</label>
+            <input type="number" class="form-control" id="idade" min="0" max="30" placeholder="Digite a idade do pet" required />
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label for="peso" class="form-label">Peso (kg):</label>
+            <input type="number" class="form-control" id="peso" step="0.1" min="0" max="100" placeholder="Digite o peso do pet" required />
+          </div>
+          <div class="col-md-6">
+            <label for="dono" class="form-label">Dono:</label>
+            <select class="form-select" id="dono" required>
+              <option value="" disabled selected>Selecione o dono</option>
+              <!-- Os clientes serão carregados aqui via JavaScript -->
+            </select>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button type="submit" class="btn-cadastrar">Cadastrar Pet</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Proteção de Autenticação Global -->
+  <script type="module"  src="js/auth-protection.js"></script>
+  <script type="module"  src="js/scriptCadastros.js"></script>
+  <script type="module"  src="js/Pet.js"></script>
+</body>
+</html>

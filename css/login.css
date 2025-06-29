@@ -1,0 +1,132 @@
+/* Estilos base */
+:root {
+  --verde-principal: #6df0b1;
+  --verde-secundario: #89f8c0;
+  --verde-escuro: #5ad89c;
+  --laranja: #ffc066;
+  --vermelho: #e74c3c;
+  --verde-sucesso: #2ecc71;
+}
+
+body {
+  margin: 0;
+  background-color: #f9f9f9;
+  color: #333;
+  font-family: 'Poppins', sans-serif;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('https://images.unsplash.com/photo-1534361960057-19889db9621e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Container principal */
+.login-container {
+  width: 100%;
+  max-width: 450px;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Animação de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cabeçalho */
+.login-header {
+  background: linear-gradient(135deg, var(--verde-principal) 0%, var(--verde-secundario) 100%);
+  padding: 30px 0;
+  text-align: center;
+  color: #2c3e50;
+}
+
+.login-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.login-header p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Corpo do formulário */
+.login-body {
+  padding: 30px;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-group-text {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-right: none;
+  color: #666;
+}
+
+.form-control {
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.form-control:focus {
+  border-color: var(--verde-principal);
+  box-shadow: 0 0 0 2px rgba(109, 240, 177, 0.3);
+}
+
+.form-label {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Botão de login */
+.btn-login {
+  background-color: var(--verde-principal);
+  color: #333;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+
+.btn-login:hover {
+  background-color: var(--verde-escuro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-login:active {
+  transform: translateY(0);
+}
+
+/* Responsividade */
+@media (max-width: 576px) {
+  .login-container {
+    margin: 0 15px;
+  }
+  
+  .login-body {
+    padding: 20px;
+  }
+}

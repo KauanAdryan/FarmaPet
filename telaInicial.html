@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmácia Pet - Gerenciamento de Medicamentos</title>
+  <meta name="description" content="Sistema de gerenciamento de medicamentos para pets">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/telaInicial.css">
+</head>
+
+<body>
+  <header class="header-bg py-2 px-3 d-flex justify-content-between align-items-center shadow-sm">
+    <div class="d-flex align-items-center gap-3">
+      <a href="telaInicial.html" class="home-icon">🏠</a>
+
+      <!-- Menu Cadastros -->
+      <div class="dropdown">
+        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownCadastros"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          Cadastros
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownCadastros">
+          <li><a class="dropdown-item" href="CadastroCliente.html">Cadastro Cliente</a></li>
+          <li><a class="dropdown-item" href="CadastroRemedio.html">Cadastro Remédio</a></li>
+          <li><a class="dropdown-item" href="CadastroPet.html">Cadastro Pet</a></li>
+          <li><a class="dropdown-item" href="CadastroFuncionario.html">Cadastro Funcionário</a></li>
+        </ul>
+      </div>
+
+      <!-- Menu Listas -->
+      <div class="dropdown">
+        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownListas"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          Listas
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownListas">
+          <li><a class="dropdown-item" href="ListarCliente.html">Listar Cliente</a></li>
+          <li><a class="dropdown-item" href="ListarFuncionario.html">Listar Funcionário</a></li>
+        </ul>
+      </div>
+    </div>
+
+<!-- Substitua o botão do ícone de usuário por este código -->
+<div class="dropdown">
+  <button class="user-icon btn p-0 dropdown-toggle" type="button" id="dropdownUsuario" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Perfil do Usuário">
+    👤
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUsuario">
+    <li><a class="dropdown-item text-danger" href="login.html" id="btnLogout"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+  </ul>
+</div>
+  </header>
+
+  <main class="container-fluid my-3">
+    <section class="search-section mb-4">
+      <div class="row g-3 align-items-center justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <div class="input-group">
+            <input type="text" id="searchInput" class="form-control"
+              placeholder="Buscar por nome, princípio ativo ou espécie..." aria-label="Buscar medicamentos">
+            <button id="searchButton" class="btn btn-custom-primary" type="button" aria-label="Pesquisar">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-3">
+          <div class="d-flex gap-2">
+            <select id="statusFilter" class="form-select" aria-label="Filtrar por status">
+              <option value="all">Todos os status</option>
+              <option value="Ativo">Ativo</option>
+              <option value="Inativo">Inativo</option>
+            </select>
+            <button id="clearFilters" class="btn btn-outline-secondary" aria-label="Limpar filtros">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="medicamentos-grid">
+      <div id="gridMedicamentos" class="row g-4" role="grid" aria-label="Lista de medicamentos"></div>
+    </section>
+
+    <div class="fixed-buttons">
+      <div class="d-flex gap-2">
+        <button id="btnAdicionarLote" class="btn btn-custom-success" aria-label="Adicionar medicamentos em lote">
+          <i class="fas fa-boxes"></i> Adicionar em lote
+        </button>
+        <button id="btnRemoverLote" class="btn btn-custom-warning" aria-label="Remover medicamentos em lote">
+          <i class="fas fa-trash-alt"></i> Remover em lote
+        </button>
+      </div>
+
+      <div class="d-flex gap-2 align-items-center">
+        <button id="btnGerarRelatorioMedicamentos" class="btn btn-custom-info"
+          aria-label="Gerar relatório de medicamentos">
+          <i class="fas fa-file-pdf"></i> Gerar Relatório
+        </button>
+
+        <div>
+          <a href="CadastroRemedio.html" class="btn btn-custom-primary" aria-label="Cadastrar novo medicamento">
+            <i class="fas fa-plus"></i> Cadastrar novo
+          </a>
+        </div>
+      </div>
+  </main>
+
+  <!-- Modal de detalhes -->
+  <div id="medicamentoModal" class="modal fade" role="dialog" aria-modal="false" aria-labelledby="modalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-gradient bg-primary text-white">
+          <h5 class="modal-title" id="modalTitle">Detalhes do Medicamento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-5">
+              <div id="modalPhotoPreview"
+                class="modal-photo-preview d-flex align-items-center justify-content-center bg-light border rounded overflow-hidden">
+                <i class="fas fa-pills fa-4x text-muted"></i>
+              </div>
+            </div>
+            <div class="col-md-7">
+              <div class="row g-3">
+                <div class="col-12">
+                  <strong>Nome:</strong>
+                  <span id="modalNome" class="d-block" aria-label="Nome do medicamento"></span>
+                </div>
+                <div class="col-12">
+                  <strong>Princípio Ativo:</strong>
+                  <span id="modalPrincipioAtivo" class="d-block" aria-label="Princípio ativo"></span>
+                </div>
+                <div class="col-12">
+                  <strong>Dosagem:</strong>
+                  <span id="modalDosagem" class="d-block" aria-label="Dosagem"></span>
+                </div>
+                <div class="col-12">
+                  <strong>Espécie Indicada:</strong>
+                  <span id="modalEspecie" class="d-block" aria-label="Espécie indicada"></span>
+                </div>
+                <div class="col-12">
+                  <strong>Tipo de Uso:</strong>
+                  <span id="modalTipoUso" class="d-block" aria-label="Tipo de uso"></span>
+                </div>
+                <div class="col-12">
+                  <strong>Data de Validade:</strong>
+                  <span id="modalValidade" class="d-block" aria-label="Data de validade"></span>
+                </div>
+                <div class="col-12">
+                  <strong>Idade Indicada:</strong>
+                  <span id="modalIdade" class="d-block" aria-label="Idade indicada"></span>
+                </div>
+                <div class="col-12">
+                  <strong>Peso Indicado:</strong>
+                  <span id="modalPeso" class="d-block" aria-label="Peso indicado"></span>
+                </div>
+                <div class="col-12">
+                  <strong>Receita Obrigatória:</strong>
+                  <span id="modalReceita" class="d-block" aria-label="Receita obrigatória"></span>
+                </div>
+                <div class="col-12">
+                  <strong>Status:</strong>
+                  <span id="modalStatus" class="d-block" aria-label="Status do medicamento"></span>
+                </div>
+                <div class="col-12">
+                  <strong>Quantidade em Estoque:</strong>
+                  <span id="modalQuantidadeEstoque" class="d-block" aria-label="Quantidade em estoque"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de edição -->
+  <div id="editarMedicamentoModal" class="modal fade" role="dialog" aria-modal="false"
+    aria-labelledby="editarModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-gradient bg-primary text-white">
+          <h5 class="modal-title" id="editarModalTitle">Editar Medicamento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editarMedicamentoForm" novalidate>
+            <input type="hidden" id="editarId" name="id">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="editarNome" class="form-label">Nome:</label>
+                <input type="text" class="form-control" id="editarNome" name="nome" required aria-required="true">
+              </div>
+              <div class="col-md-6">
+                <label for="editarPrincipioAtivo" class="form-label">Princípio Ativo:</label>
+                <input type="text" class="form-control" id="editarPrincipioAtivo" name="principioAtivo" required
+                  aria-required="true">
+              </div>
+              <div class="col-md-6">
+                <label for="editarDosagem" class="form-label">Dosagem:</label>
+                <input type="text" class="form-control" id="editarDosagem" name="dosagem" required aria-required="true">
+              </div>
+              <div class="col-md-6">
+                <label for="editarEspecie" class="form-label">Espécie Indicada:</label>
+                <input type="text" class="form-control" id="editarEspecie" name="especieIndicada" required
+                  aria-required="true">
+              </div>
+              <div class="col-md-6">
+                <label for="editarTipoUso" class="form-label">Tipo de Uso:</label>
+                <select class="form-select" id="editarTipoUso" name="tipoUso" required aria-required="true">
+                  <option value="INTERNO">Uso Interno</option>
+                  <option value="EXTERNO">Uso Externo</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="editarValidade" class="form-label">Data de Validade:</label>
+                <input type="date" class="form-control" id="editarValidade" name="dataValidade" required
+                  aria-required="true">
+              </div>
+              <div class="col-md-6">
+                <label for="editarIdade" class="form-label">Idade Indicada:</label>
+                <input type="number" class="form-control" id="editarIdade" name="idadeIndicada" min="0"
+                  aria-label="Idade indicada em meses">
+              </div>
+              <div class="col-md-6">
+                <label for="editarPeso" class="form-label">Peso Indicado (kg):</label>
+                <input type="number" step="0.1" class="form-control" id="editarPeso" name="pesoIndicado" min="0"
+                  aria-label="Peso indicado em quilogramas">
+              </div>
+              <div class="col-md-6">
+                <label for="editarQuantidadeEstoque" class="form-label">Quantidade em Estoque:</label>
+                <input type="number" class="form-control" id="editarQuantidadeEstoque" name="quantidadeEstoque" required
+                  min="0" aria-required="true">
+              </div>
+              <div class="col-md-6">
+                <label for="editarReceita" class="form-label">Receita Obrigatória:</label>
+                <select class="form-select" id="editarReceita" name="receitaObrigatoria" required aria-required="true">
+                  <option value="false">Não</option>
+                  <option value="true">Sim</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="editarStatus" class="form-label">Status:</label>
+                <select class="form-select" id="editarStatus" name="medicamentoativo" required aria-required="true">
+                  <option value="Ativo">Ativo</option>
+                  <option value="Inativo">Inativo</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label for="editarFoto" class="form-label">Foto:</label>
+                <div class="file-upload-wrapper">
+                  <div id="editarPhotoPreview"
+                    class="photo-preview d-flex align-items-center justify-content-center bg-light border rounded overflow-hidden mb-2 position-relative"
+                    aria-hidden="true">
+                    <i class="fas fa-pills fa-4x text-muted"></i>
+                    <input type="file" class="form-control file-input-overlay" id="editarFoto" name="foto"
+                      accept="image/jpeg, image/png, image/gif" aria-label="Selecionar imagem do medicamento">
+                  </div>
+                  <small class="form-text text-muted">Formatos aceitos: JPEG, PNG, GIF (máx. 10MB)</small>
+                </div>
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <i class="fas fa-times"></i> Cancelar
+              </button>
+              <button type="submit" class="btn btn-custom-primary">
+                <i class="fas fa-save"></i> Salvar Alterações
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Adicionar em Lote -->
+  <div id="modalLote" class="modal fade" role="dialog" aria-modal="false" aria-labelledby="modalLoteTitle"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-gradient bg-primary text-white">
+          <h5 class="modal-title" id="modalLoteTitle">Adicionar Medicamento em Lote</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group mb-3">
+            <input type="text" id="pesquisaMedicamento" class="form-control" placeholder="Pesquisar medicamento..."
+              aria-label="Pesquisar medicamento">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+          </div>
+          <div id="listaMedicamentosLote" class="lista-medicamentos-lote" role="listbox" aria-multiselectable="true"
+            style="max-height: 300px; overflow-y: auto;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button id="btnSalvarLote" type="button" class="btn btn-custom-primary">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Remover em Lote -->
+  <div id="modalRemoverLote" class="modal fade" role="dialog" aria-modal="false" aria-labelledby="modalRemoverLoteTitle"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-gradient bg-primary text-white">
+          <h5 class="modal-title" id="modalRemoverLoteTitle">Remover Medicamento em Lote</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="input-group mb-3">
+            <input type="text" id="pesquisaMedicamentoRemover" class="form-control"
+              placeholder="Pesquisar medicamento..." aria-label="Pesquisar medicamento">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+          </div>
+          <div id="listaMedicamentosRemoverLote" class="lista-medicamentos-lote" role="listbox"
+            aria-multiselectable="true" style="max-height: 300px; overflow-y: auto;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button id="btnRemoverLote1" type="button" class="btn btn-custom-danger">
+            <i class="fas fa-trash-alt"></i> Remover
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="message-container" class="position-fixed top-0 end-0 p-3" style="z-index: 11" role="status"
+    aria-live="polite"></div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Proteção de Autenticação Global -->
+  <script src="js/auth-protection.js"></script>
+  <script type="module" src="js/TelaInicio.js"></script>
+</body>
+
+</html>
