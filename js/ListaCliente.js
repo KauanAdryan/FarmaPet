@@ -195,23 +195,23 @@ function formatCPF(cpf) {
 
 function formatDate(dateStr) {
   if (!dateStr) return 'N/A';
-  
+
   try {
     // Se a data já está no formato YYYY-MM-DD, usa diretamente
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
       const [year, month, day] = dateStr.split('-');
       return `${day}/${month}/${year}`;
     }
-    
+
     // Para outras datas, cria um objeto Date e ajusta para fuso horário local
     const date = new Date(dateStr);
-    
+
     // Verifica se a data é válida
     if (isNaN(date.getTime())) {
       console.warn('Data inválida:', dateStr);
       return 'N/A';
     }
-    
+
     // Usa toLocaleDateString para evitar problemas de fuso horário
     return date.toLocaleDateString('pt-BR');
   } catch (error) {
@@ -319,11 +319,11 @@ function showClienteDetails(cliente) {
   modalEl.querySelector('#modalClienteTitle').textContent = cliente.nome || '';
   modalEl.querySelector('#modalNome').textContent = cliente.nome || 'N/A';
   modalEl.querySelector('#modalCpf').textContent = formatCPF(cliente.cpf);
-  
+
   // Usa o campo dataNasc conforme a DTO
   const dataNascimento = cliente.dataNasc || cliente.idade || cliente.nascimento || cliente.dataNascimento;
   modalEl.querySelector('#modalDataNasc').textContent = formatDate(dataNascimento);
-  
+
   modalEl.querySelector('#modalEmail').textContent = cliente.email || 'N/A';
   modalEl.querySelector('#modalTelefone').textContent = formatPhone(cliente.telefone);
 
@@ -341,17 +341,21 @@ function showClienteDetails(cliente) {
       petDiv.classList.add('pet-detail', 'p-2', 'mb-2', 'border', 'rounded', 'd-flex', 'justify-content-between', 'align-items-center');
 
       petDiv.innerHTML = `
-        <div>
-          <p><strong>Nome:</strong> ${pet.nome || 'N/A'}</p>
-          <p><strong>Espécie:</strong> ${pet.especie || 'N/A'}</p>
-          <p><strong>Raça:</strong> ${pet.raca || 'N/A'}</p>
-          <p><strong>Nascimento:</strong> ${formatDate(pet.idade)}</p>
-        </div>
-        <div>
-          <button class="btn btn-sm btn-outline-primary me-2">Ver detalhes</button>
-          <button class="btn btn-sm btn-outline-danger">Remover</button>
-        </div>
-      `;
+      <div class="pe-3">
+        <p class="mb-1"><strong>🐾 Nome:</strong> ${pet.nome || 'N/A'}</p>
+        <p class="mb-1"><strong>Espécie:</strong> ${pet.especie || 'N/A'}</p>
+        <p class="mb-1"><strong>Raça:</strong> ${pet.raca || 'N/A'}</p>
+        <p class="mb-0"><strong>Nascimento:</strong> ${formatDate(pet.idade)}</p>
+      </div>
+      <div class="d-flex flex-column gap-2 mt-2 mt-md-0">
+        <button class="btn btn-sm btn-outline-primary" title="Ver detalhes do pet">
+          <i class="fas fa-eye me-1"></i> Ver detalhes
+        </button>
+        <button class="btn btn-sm btn-outline-danger" title="Remover pet">
+          <i class="fas fa-trash-alt me-1"></i> Remover
+        </button>
+      </div>
+    `;
 
       const btnDetalhes = petDiv.querySelector('button.btn-outline-primary');
       const btnRemover = petDiv.querySelector('button.btn-outline-danger');
@@ -386,10 +390,10 @@ function fillEditForm(cliente) {
 
   form.querySelector('#editNome').value = cliente.nome || '';
   form.querySelector('#editCpf').value = cliente.cpf || '';
-  
+
   // Usa o campo dataNasc conforme a DTO
   const dataNascimento = cliente.dataNasc || cliente.idade || cliente.nascimento || cliente.dataNascimento;
-  
+
   // Garante que a data seja exibida no formato correto para o input date
   if (dataNascimento) {
     // Se já está no formato YYYY-MM-DD, usa diretamente
@@ -410,7 +414,7 @@ function fillEditForm(cliente) {
   } else {
     form.querySelector('#editDataNasc').value = '';
   }
-  
+
   form.querySelector('#editEmail').value = cliente.email || '';
   form.querySelector('#editTelefone').value = cliente.telefone || '';
 }
@@ -480,27 +484,27 @@ function validateClienteForm(data) {
   if (!data.nome || data.nome.length < 3) {
     return { isValid: false, message: 'Nome deve ter ao menos 3 caracteres' };
   }
-  
+
   if (!data.cpf || !/^\d{11}$/.test(data.cpf)) {
     return { isValid: false, message: 'CPF deve conter 11 dígitos numéricos' };
   }
-  
+
   if (!data.email || !data.email.includes('@')) {
     return { isValid: false, message: 'Email deve ser válido' };
   }
-  
+
   if (!data.dataNasc) {
     return { isValid: false, message: 'Data de nascimento é obrigatória' };
   }
-  
+
   // Valida se a data é válida
   const dataNasc = new Date(data.dataNasc);
   if (isNaN(dataNasc.getTime())) {
     return { isValid: false, message: 'Data de nascimento deve ser válida' };
   }
-  
+
   // enderecoId é opcional na DTO, então não validamos
-  
+
   return { isValid: true };
 }
 
@@ -528,17 +532,38 @@ function handleFilterChange() {
 }
 
 function abrirModalPet(pet) {
-  document.getElementById('modalPetNome').textContent = pet.nome || 'N/A';
-  document.getElementById('modalPetRaca').textContent = pet.raca || 'N/A';
-  document.getElementById('modalPetEspecie').textContent = pet.especie || 'N/A';
-  document.getElementById('modalPetNascimento').textContent = formatDate(pet.idade);
-  document.getElementById('modalPetPeso').textContent = pet.peso
-    ? `${pet.peso} kg`
-    : 'N/A';
+  const nomeEl = document.getElementById('modalPetNome');
+  const racaEl = document.getElementById('modalPetRaca');
+  const especieEl = document.getElementById('modalPetEspecie');
+  const nascimentoEl = document.getElementById('modalPetNascimento');
+  const pesoEl = document.getElementById('modalPetPeso');
+  const modalEl = document.getElementById('petModal');
 
-  const modalPet = new bootstrap.Modal(document.getElementById('petModal'));
-  modalPet.show();
+  if (!modalEl || !nomeEl || !racaEl || !especieEl || !nascimentoEl || !pesoEl) {
+    console.warn('Elemento do modal não encontrado.');
+    return;
+  }
+
+  nomeEl.textContent = pet.nome || 'N/A';
+  racaEl.textContent = pet.raca || 'N/A';
+  especieEl.textContent = pet.especie || 'N/A';
+  nascimentoEl.textContent = formatDate(pet.idade);
+  pesoEl.textContent = pet.peso ? `${pet.peso} kg` : 'N/A';
+
+  // Adiciona uma animação leve ao abrir o modal
+  modalEl.classList.add('fade');
+  const modalInstance = new bootstrap.Modal(modalEl);
+  modalInstance.show();
+
+  // Aplica animação personalizada se quiser
+  modalEl.addEventListener('shown.bs.modal', () => {
+    const content = modalEl.querySelector('.modal-content');
+    if (content) {
+      content.classList.add('animate__animated', 'animate__fadeInDown');
+    }
+  }, { once: true });
 }
+
 
 // === REMOVER PET (DESVINCULAR) ===
 async function removerPetDoCliente(petId) {

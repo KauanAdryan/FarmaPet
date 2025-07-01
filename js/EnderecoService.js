@@ -1,121 +1,213 @@
 const apiBaseUrl = 'http://localhost:8080';
 
+// ==============================================
+// Módulo de Serviços de Localização
+// ==============================================
+
 /**
- * Busca bairro por nome. Se não encontrar, cadastra um novo.
+ * Busca ou cria um bairro
+ * @param {string} nome - Nome do bairro
+ * @returns {Promise<Object>} Dados do bairro
+ * @throws {Error} Se ocorrer erro na requisição
  */
 async function buscarOuCriarBairro(nome) {
-  const res = await fetch(`${apiBaseUrl}/bairros`, { credentials: 'include' });
-  if (!res.ok) throw new Error('Erro ao buscar bairros');
-  const bairros = await res.json();
+  try {
+    // Busca todos os bairros
+    const res = await fetch(`${apiBaseUrl}/bairros`, { 
+      credentials: 'include' 
+    });
+    if (!res.ok) throw new Error('Erro ao buscar bairros');
+    
+    const bairros = await res.json();
+    const existente = bairros.find(b => 
+      b.descricao.toLowerCase() === nome.toLowerCase()
+    );
+    
+    if (existente) return existente;
 
-  const existente = bairros.find(b => b.descricao.toLowerCase() === nome.toLowerCase());
-  if (existente) return existente;
+    // Cria novo bairro se não existir
+    const resPost = await fetch(`${apiBaseUrl}/bairros`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ descricao: nome })
+    });
 
-  const resPost = await fetch(`${apiBaseUrl}/bairros`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({ descricao: nome })
-  });
-
-  if (!resPost.ok) throw new Error('Erro ao cadastrar bairro');
-  return await resPost.json();
+    if (!resPost.ok) throw new Error('Erro ao cadastrar bairro');
+    return await resPost.json();
+  } catch (error) {
+    console.error('Erro em buscarOuCriarBairro:', error);
+    throw error;
+  }
 }
 
 /**
- * Busca rua por nome. Se não encontrar, cadastra uma nova.
+ * Busca ou cria uma rua
+ * @param {string} nome - Nome da rua
+ * @returns {Promise<Object>} Dados da rua
+ * @throws {Error} Se ocorrer erro na requisição
  */
 async function buscarOuCriarRua(nome) {
-  const res = await fetch(`${apiBaseUrl}/ruas/por-nome/${encodeURIComponent(nome)}`, { credentials: 'include' });
-  if (res.ok) return await res.json();
+  try {
+    // Tenta buscar por nome exato
+    const res = await fetch(`${apiBaseUrl}/ruas/por-nome/${encodeURIComponent(nome)}`, { 
+      credentials: 'include' 
+    });
+    
+    if (res.ok) return await res.json();
 
-  const resPost = await fetch(`${apiBaseUrl}/ruas`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({ descricao: nome })
-  });
+    // Cria nova rua se não existir
+    const resPost = await fetch(`${apiBaseUrl}/ruas`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ descricao: nome })
+    });
 
-  if (!resPost.ok) throw new Error('Erro ao cadastrar rua');
-  return await resPost.json();
+    if (!resPost.ok) throw new Error('Erro ao cadastrar rua');
+    return await resPost.json();
+  } catch (error) {
+    console.error('Erro em buscarOuCriarRua:', error);
+    throw error;
+  }
 }
 
 /**
- * Busca UF por sigla. Se não encontrar, cadastra uma nova.
+ * Busca ou cria uma UF
+ * @param {string} sigla - Sigla da UF (ex: "SP")
+ * @returns {Promise<Object>} Dados da UF
+ * @throws {Error} Se ocorrer erro na requisição
  */
 async function buscarOuCriarUF(sigla) {
-  const res = await fetch(`${apiBaseUrl}/uf/sigla/${sigla}`, { credentials: 'include' });
-  if (res.ok) return await res.json();
+  try {
+    // Tenta buscar por sigla
+    const res = await fetch(`${apiBaseUrl}/uf/sigla/${sigla}`, { 
+      credentials: 'include' 
+    });
+    
+    if (res.ok) return await res.json();
 
-  const resPost = await fetch(`${apiBaseUrl}/uf`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({ sigla, descricao: sigla })
-  });
+    // Cria nova UF se não existir
+    const resPost = await fetch(`${apiBaseUrl}/uf`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ 
+        sigla, 
+        descricao: sigla 
+      })
+    });
 
-  if (!resPost.ok) throw new Error('Erro ao cadastrar UF');
-  return await resPost.json();
+    if (!resPost.ok) throw new Error('Erro ao cadastrar UF');
+    return await resPost.json();
+  } catch (error) {
+    console.error('Erro em buscarOuCriarUF:', error);
+    throw error;
+  }
 }
 
 /**
- * Busca cidade por nome e UF. Se não encontrar, cadastra uma nova.
+ * Busca ou cria uma cidade
+ * @param {string} nome - Nome da cidade
+ * @param {number} idUf - ID da UF relacionada
+ * @returns {Promise<Object>} Dados da cidade
+ * @throws {Error} Se ocorrer erro na requisição
  */
 async function buscarOuCriarCidade(nome, idUf) {
-  const res = await fetch(`${apiBaseUrl}/cidade`, { credentials: 'include' });
-  if (!res.ok) throw new Error('Erro ao buscar cidades');
-  const cidades = await res.json();
+  try {
+    // Busca todas as cidades
+    const res = await fetch(`${apiBaseUrl}/cidade`, { 
+      credentials: 'include' 
+    });
+    if (!res.ok) throw new Error('Erro ao buscar cidades');
+    
+    const cidades = await res.json();
+    const existente = cidades.find(c => 
+      c.descricao.toLowerCase() === nome.toLowerCase() && 
+      c.uf.idUf === idUf
+    );
+    
+    if (existente) return existente;
 
-  const existente = cidades.find(
-    c => c.descricao.toLowerCase() === nome.toLowerCase() && c.uf.idUf === idUf
-  );
-  if (existente) return existente;
+    // Cria nova cidade se não existir
+    const resPost = await fetch(`${apiBaseUrl}/cidade`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ 
+        descricao: nome, 
+        uf: { idUf } 
+      })
+    });
 
-  const resPost = await fetch(`${apiBaseUrl}/cidade`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({ descricao: nome, uf: { idUf } })
-  });
-
-  if (!resPost.ok) throw new Error('Erro ao cadastrar cidade');
-  return await resPost.json();
+    if (!resPost.ok) throw new Error('Erro ao cadastrar cidade');
+    return await resPost.json();
+  } catch (error) {
+    console.error('Erro em buscarOuCriarCidade:', error);
+    throw error;
+  }
 }
 
+// ==============================================
+// Serviço Principal de Endereços
+// ==============================================
+
 /**
- * Faz o cadastro completo do endereço: busca ou cria os dados relacionados
- * e envia o endereço final ao backend.
+ * Cadastra um endereço completo
+ * @param {Object} endereco - Dados do endereço
+ * @param {string} endereco.cep - CEP
+ * @param {string} endereco.numero - Número
+ * @param {string} [endereco.complemento] - Complemento
+ * @param {string} endereco.ufSigla - Sigla da UF
+ * @param {string} endereco.cidadeNome - Nome da cidade
+ * @param {string} endereco.bairroNome - Nome do bairro
+ * @param {string} endereco.ruaNome - Nome da rua
+ * @returns {Promise<Object>} Endereço cadastrado
+ * @throws {Error} Se ocorrer erro em qualquer etapa
  */
-async function cadastrarEndereco({ cep, numero, complemento, ufSigla, cidadeNome, bairroNome, ruaNome }) {
+async function cadastrarEndereco({ 
+  cep, 
+  numero, 
+  complemento, 
+  ufSigla, 
+  cidadeNome, 
+  bairroNome, 
+  ruaNome 
+}) {
   try {
-    console.log('[1] Buscando ou cadastrando Bairro...');
-    const bairro = await buscarOuCriarBairro(bairroNome);
-    if (!bairro?.idBairro) throw new Error('Bairro inválido');
+    // Validação básica dos parâmetros
+    if (!cep || !numero || !ufSigla || !cidadeNome || !bairroNome || !ruaNome) {
+      throw new Error('Todos os campos obrigatórios devem ser preenchidos');
+    }
 
-    console.log('[2] Buscando ou cadastrando Rua...');
-    const rua = await buscarOuCriarRua(ruaNome);
-    if (!rua?.idRua) throw new Error('Rua inválida');
-
-    console.log('[3] Buscando ou cadastrando UF...');
+    // 1. Busca ou cria UF
     const uf = await buscarOuCriarUF(ufSigla);
-    if (!uf?.idUf) throw new Error('UF inválida');
+    if (!uf?.idUf) throw new Error('Falha ao obter/registrar UF');
 
-    console.log('[4] Buscando ou cadastrando Cidade...');
+    // 2. Busca ou cria Cidade
     const cidade = await buscarOuCriarCidade(cidadeNome, uf.idUf);
-    if (!cidade?.idCidade) throw new Error('Cidade inválida');
+    if (!cidade?.idCidade) throw new Error('Falha ao obter/registrar cidade');
 
+    // 3. Busca ou cria Bairro
+    const bairro = await buscarOuCriarBairro(bairroNome);
+    if (!bairro?.idBairro) throw new Error('Falha ao obter/registrar bairro');
+
+    // 4. Busca ou cria Rua
+    const rua = await buscarOuCriarRua(ruaNome);
+    if (!rua?.idRua) throw new Error('Falha ao obter/registrar rua');
+
+    // Prepara payload para cadastro do endereço
     const payload = {
-      cep,
+      cep: cep.replace(/\D/g, ''),
       numero,
-      complemento,
+      complemento: complemento || null,
       bairroId: bairro.idBairro,
       ruaId: rua.idRua,
       cidadeId: cidade.idCidade,
       ufId: uf.idUf
     };
 
-    console.log('[5] Enviando endereço ao backend:', payload);
-
+    // 5. Cadastra o endereço completo
     const res = await fetch(`${apiBaseUrl}/enderecos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -124,21 +216,21 @@ async function cadastrarEndereco({ cep, numero, complemento, ufSigla, cidadeNome
     });
 
     if (!res.ok) {
-      const msg = await res.text();
-      throw new Error(`Erro ao cadastrar endereço: ${msg}`);
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Erro ao cadastrar endereço');
     }
 
-    const endereco = await res.json();
-    console.log('[6] Endereço cadastrado com sucesso:', endereco);
-    return endereco;
-
-  } catch (err) {
-    console.error('Erro no cadastro de endereço:', err);
-    throw err;
+    return await res.json();
+  } catch (error) {
+    console.error('Erro no cadastro de endereço:', error);
+    throw error;
   }
 }
 
-// Exportações
+// ==============================================
+// Exportação dos Serviços
+// ==============================================
+
 export {
   buscarOuCriarUF,
   buscarOuCriarCidade,

@@ -34,12 +34,6 @@ body {
   animation: fadeIn 0.5s ease-out;
 }
 
-/* Animação de entrada */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 /* Cabeçalho */
 .login-header {
   background: linear-gradient(135deg, var(--verde-principal) 0%, var(--verde-secundario) 100%);

@@ -7,7 +7,7 @@
   <title>Cadastro de Remédio</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/cadastros.css" />
 </head>
 
@@ -18,8 +18,8 @@
 
       <!-- Menu Cadastros -->
       <div class="dropdown">
-        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownCadastros"
-          data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownCadastros" data-bs-toggle="dropdown"
+          aria-expanded="false">
           Cadastros
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownCadastros">
@@ -32,8 +32,8 @@
 
       <!-- Menu Listas -->
       <div class="dropdown">
-        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownListas"
-          data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownListas" data-bs-toggle="dropdown"
+          aria-expanded="false">
           Listas
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownListas">
@@ -43,7 +43,7 @@
       </div>
     </div>
 
-    <!-- Substitua o botão do ícone de usuário por este código -->
+    <!-- Botão usuário -->
     <div class="dropdown">
       <button class="user-icon btn p-0 dropdown-toggle" type="button" id="dropdownUsuario" data-bs-toggle="dropdown"
         aria-expanded="false" aria-label="Perfil do Usuário">
@@ -65,6 +65,7 @@
           <div class="col-md-6 mb-3 mb-md-0">
             <label for="nome" class="form-label">Nome:</label>
             <input type="text" class="form-control" placeholder="Nome do medicamento" id="nome" name="nome" required />
+            <div id="nome-error" class="invalid-feedback"></div>
           </div>
           <div class="col-md-6">
             <label for="receita_obrigatoria" class="form-label">É obrigatório o uso de receita?</label>
@@ -73,6 +74,7 @@
               <option value="true">Sim</option>
               <option value="false">Não</option>
             </select>
+            <div id="receita_obrigatoria-error" class="invalid-feedback"></div>
           </div>
         </div>
 
@@ -81,22 +83,25 @@
             <label for="principio_ativo" class="form-label">Princípio ativo:</label>
             <input type="text" class="form-control" placeholder="Princípio ativo do medicamento" id="principio_ativo"
               name="principio_ativo" required />
+            <div id="principio_ativo-error" class="invalid-feedback"></div>
           </div>
           <div class="col-md-6">
             <label for="peso_indicado" class="form-label">Peso indicado (kg):</label>
             <input type="number" class="form-control" step="0.01" id="peso_indicado" name="peso_indicado" min="0" />
+            <div id="peso_indicado-error" class="invalid-feedback"></div>
           </div>
         </div>
 
         <div class="row mb-3">
           <div class="col-md-6 mb-3 mb-md-0">
             <label for="dosagem" class="form-label">Dosagem:</label>
-            <input type="text" class="form-control" placeholder="Dosagem do medicamento" id="dosagem" name="dosagem"
-              required />
+            <input type="text" class="form-control" placeholder="Dosagem do medicamento" id="dosagem" name="dosagem" required />
+            <div id="dosagem-error" class="invalid-feedback"></div>
           </div>
           <div class="col-md-6">
             <label for="idade_indicada" class="form-label">Idade indicada (anos):</label>
             <input type="number" class="form-control" id="idade_indicada" name="idade_indicada" min="0" />
+            <div id="idade_indicada-error" class="invalid-feedback"></div>
           </div>
         </div>
 
@@ -105,6 +110,7 @@
             <label for="especie_indicada" class="form-label">Espécie indicada:</label>
             <input type="text" class="form-control" placeholder="Espécie indicada do medicamento" id="especie_indicada"
               name="especie_indicada" />
+            <div id="especie_indicada-error" class="invalid-feedback"></div>
           </div>
           <div class="col-md-6">
             <label for="tipo_uso" class="form-label">Uso interno ou externo:</label>
@@ -113,6 +119,7 @@
               <option value="INTERNO">Interno</option>
               <option value="EXTERNO">Externo</option>
             </select>
+            <div id="tipo_uso-error" class="invalid-feedback"></div>
           </div>
         </div>
 
@@ -120,6 +127,7 @@
           <div class="col-md-6 mb-3 mb-md-0">
             <label for="data_validade" class="form-label">Data de validade:</label>
             <input type="date" class="form-control" id="data_validade" name="data_validade" required />
+            <div id="data_validade-error" class="invalid-feedback"></div>
           </div>
           <div class="col-md-6">
             <label for="medicamentoativo" class="form-label">Produto ativo:</label>
@@ -128,6 +136,7 @@
               <option value="Ativo">Sim</option>
               <option value="Inativo">Não</option>
             </select>
+            <div id="medicamentoativo-error" class="invalid-feedback"></div>
           </div>
         </div>
 

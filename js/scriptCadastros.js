@@ -1,75 +1,101 @@
-// Configuração inicial
+// Configurações globais
 export const apiBaseUrl = 'http://localhost:8080';
 
-// Verificação de autenticação - deve ser executada antes de qualquer outra coisa
+// ==============================================
+// Módulo de Autenticação
+// ==============================================
+
 export function checkUserLoggedIn() {
   const isLoggedIn = localStorage.getItem('userLoggedIn');
   const currentPath = window.location.pathname;
   const currentHref = window.location.href;
 
-  console.log('Verificando autenticação:', { isLoggedIn, currentPath, currentHref });
-
   if (!isLoggedIn &&
-    !currentPath.includes('login.html') &&
-    !currentHref.includes('login.html')) {
-    console.log('Usuário não autenticado, redirecionando para login...');
+      !currentPath.includes('login.html') &&
+      !currentHref.includes('login.html')) {
+    console.log('Redirecionando para login...');
     window.location.href = 'login.html';
     return false;
   }
-
-  console.log('Usuário autenticado ou na página de login');
   return true;
 }
 
-// Função para obter o username do usuário logado
 export function getLoggedInUsername() {
   return localStorage.getItem('username');
 }
 
-// Função para fazer logout
 export async function performLogout() {
   try {
     const response = await fetch(`${apiBaseUrl}/logout`, {
       method: 'POST',
-      credentials: 'include'  // <- Adicionado aqui
+      credentials: 'include'
     });
 
     if (response.ok) {
       localStorage.removeItem('userLoggedIn');
       localStorage.removeItem('username');
-
-      alert('Logout realizado com sucesso');
+      showMessage('Logout realizado com sucesso', 'success');
       setTimeout(() => window.location.href = 'login.html', 1000);
     } else {
-      alert('Erro ao fazer logout');
+      showMessage('Erro ao fazer logout', 'error');
     }
   } catch (error) {
     console.error('Erro ao fazer logout:', error);
-    alert('Erro ao conectar com o servidor');
+    showMessage('Erro ao conectar com o servidor', 'error');
   }
 }
 
-// Função helper para pegar elemento
-export function getElement(selector) {
-  return document.querySelector(selector);
+// ==============================================
+// Módulo de Utilitários DOM
+// ==============================================
+
+export function getElement(selector, parent = document) {
+  const element = parent.querySelector(selector);
+  if (!element) console.warn(`Elemento não encontrado: ${selector}`);
+  return element;
 }
 
-// Converte arquivo para base64
-export function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
+export function showMessage(message, type = 'info') {
+  const mensagemEl = getElement('#mensagemSistema');
+
+  if (mensagemEl) {
+    mensagemEl.className = `alert alert-${type === 'error' ? 'danger' : type}`;
+    mensagemEl.textContent = message;
+    mensagemEl.style.display = 'block';
+    setTimeout(() => mensagemEl.style.display = 'none', 4000);
+  } else {
+    alert(`${type.toUpperCase()}: ${message}`);
+  }
 }
 
-// Formata CPF
-export function formatarCPF(cpf) {
-  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+export function showFieldError(input, message) {
+  if (!input) return;
+
+  clearFieldError(input);
+  input.classList.add('is-invalid');
+
+  const errorDiv = input.parentNode.querySelector('.invalid-feedback');
+  if (errorDiv) {
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+  }
 }
 
-// Aplica máscaras de input
+export function clearFieldError(input) {
+  if (!input) return;
+
+  input.classList.remove('is-invalid');
+  const errorDiv = input.parentNode.querySelector('.invalid-feedback');
+  if (errorDiv) {
+    errorDiv.textContent = '';
+    errorDiv.style.display = 'none';
+  }
+}
+
+// ==============================================
+// Módulo de Formulários e Validação
+// ==============================================
+
 export function aplicarMascaras() {
   const cpfInput = getElement('#cpf');
   if (cpfInput) {
@@ -102,7 +128,12 @@ export function aplicarMascaras() {
   }
 }
 
-// Valida e busca CEP via API
+export function formatarCPF(cpf) {
+  if (!cpf) return '';
+  const cleaned = cpf.replace(/\D/g, '');
+  return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+}
+
 export async function buscarCEP(cep) {
   cep = cep.replace(/\D/g, '');
   if (!/^\d{8}$/.test(cep)) {
@@ -121,7 +152,10 @@ export async function buscarCEP(cep) {
   }
 }
 
-// Habilita/desabilita botão com spinner
+// ==============================================
+// Módulo de Utilitários de Interface
+// ==============================================
+
 export function toggleButtonState(button, isLoading) {
   if (!button) return;
 
@@ -136,8 +170,40 @@ export function toggleButtonState(button, isLoading) {
   }
 }
 
-// Exibe mensagens
-export function showMessage(message, type = 'info') {
-  alert(message);
-  // Ou use notificações visuais com Bootstrap como alternativa
+export function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      reject(new Error('Nenhum arquivo fornecido'));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
 }
+
+// ==============================================
+// Inicialização
+// ==============================================
+
+let alreadySetup = false;
+
+function setup() {
+  if (alreadySetup) return;
+  alreadySetup = true;
+
+  aplicarMascaras();
+  checkUserLoggedIn();
+
+  const logoutBtn = getElement('#btnLogout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', e => {
+      e.preventDefault();
+      performLogout();
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', setup);

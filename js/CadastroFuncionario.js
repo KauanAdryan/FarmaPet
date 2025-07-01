@@ -1,110 +1,36 @@
-import { getElement, toggleButtonState, showMessage, aplicarMascaras, checkUserLoggedIn, performLogout } from './scriptCadastros.js';
+import { 
+  getElement, 
+  toggleButtonState, 
+  showMessage, 
+  aplicarMascaras, 
+  checkUserLoggedIn, 
+  performLogout 
+} from './scriptCadastros.js';
 import { cadastrarEndereco } from './EnderecoService.js';
 
-// Configuração inicial
 const apiBaseUrl = 'http://localhost:8080';
 
-// Função para validar campos do formulário
-function validateFormFields(form) {
-  let isValid = true;
-  
-  // Valida todos os campos obrigatórios
-  const requiredFields = form.querySelectorAll('[required]');
-  requiredFields.forEach(field => {
-    field.classList.remove('is-invalid');
-    
-    if (!field.value.trim()) {
-      field.classList.add('is-invalid');
-      isValid = false;
-    }
-  });
+// ==============================================
+// Módulo de Validação
+// ==============================================
 
-  // Validação específica para CPF
-  const cpfField = form.querySelector('#cpf');
-  if (cpfField) {
-    try {
-      validarCPF(cpfField.value);
-      cpfField.classList.remove('is-invalid');
-    } catch (err) {
-      cpfField.classList.add('is-invalid');
-      cpfField.nextElementSibling.textContent = err.message;
-      isValid = false;
-    }
-  }
-
-  // Validação de senha
-  const senhaField = form.querySelector('#senha');
-  const confirmarSenhaField = form.querySelector('#confirmarSenha');
-  if (senhaField && confirmarSenhaField) {
-    try {
-      validarSenha(senhaField.value, confirmarSenhaField.value);
-      senhaField.classList.remove('is-invalid');
-      confirmarSenhaField.classList.remove('is-invalid');
-    } catch (err) {
-      senhaField.classList.add('is-invalid');
-      confirmarSenhaField.classList.add('is-invalid');
-      confirmarSenhaField.nextElementSibling.textContent = err.message;
-      isValid = false;
-    }
-  }
-
-  // Validação de email
-  const emailField = form.querySelector('#email');
-  if (emailField) {
-    try {
-      validarEmail(emailField.value);
-      emailField.classList.remove('is-invalid');
-    } catch (err) {
-      emailField.classList.add('is-invalid');
-      emailField.nextElementSibling.textContent = err.message;
-      isValid = false;
-    }
-  }
-
-  return isValid;
-}
-
-// Função para buscar CEP
-async function buscarCep(cep) {
-  cep = cep.replace(/\D/g, '');
-  if (cep.length !== 8) throw new Error('CEP inválido. Deve conter 8 dígitos.');
-
-  const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-  if (!res.ok) throw new Error('Erro ao buscar CEP na API ViaCEP');
-
-  const dados = await res.json();
-  if (dados.erro) throw new Error('CEP não encontrado.');
-
-  return dados;
-}
-
-// Validação de senha
-function validarSenha(senha, confirmarSenha) {
-  if (senha.length < 6) {
-    throw new Error('A senha deve ter pelo menos 6 caracteres.');
-  }
-  
-  if (senha !== confirmarSenha) {
-    throw new Error('As senhas não coincidem.');
-  }
-  
-  return true;
-}
-
-// Validação de CPF
+/**
+ * Valida um CPF
+ * @param {string} cpf - CPF a ser validado
+ * @throws {Error} Se o CPF for inválido
+ */
 function validarCPF(cpf) {
   cpf = cpf.replace(/\D/g, '');
   
   if (cpf.length !== 11) {
-    throw new Error('CPF deve conter 11 dígitos.');
+    throw new Error('CPF deve conter 11 dígitos');
   }
   
-  // Verifica se todos os dígitos são iguais
   if (/^(\d)\1{10}$/.test(cpf)) {
-    throw new Error('CPF inválido.');
+    throw new Error('CPF inválido');
   }
   
-  // Validação dos dígitos verificadores
+  // Validação do primeiro dígito verificador
   let soma = 0;
   for (let i = 0; i < 9; i++) {
     soma += parseInt(cpf.charAt(i)) * (10 - i);
@@ -112,6 +38,7 @@ function validarCPF(cpf) {
   let resto = 11 - (soma % 11);
   let dv1 = resto < 2 ? 0 : resto;
   
+  // Validação do segundo dígito verificador
   soma = 0;
   for (let i = 0; i < 10; i++) {
     soma += parseInt(cpf.charAt(i)) * (11 - i);
@@ -120,200 +47,365 @@ function validarCPF(cpf) {
   let dv2 = resto < 2 ? 0 : resto;
   
   if (parseInt(cpf.charAt(9)) !== dv1 || parseInt(cpf.charAt(10)) !== dv2) {
-    throw new Error('CPF inválido.');
+    throw new Error('CPF inválido');
   }
-  
-  return true;
 }
 
-// Validação de email
+/**
+ * Valida uma senha
+ * @param {string} senha - Senha a ser validada
+ * @param {string} confirmacao - Confirmação da senha
+ * @throws {Error} Se a senha for inválida
+ */
+function validarSenha(senha, confirmacao) {
+  if (senha.length < 6) {
+    throw new Error('A senha deve ter pelo menos 6 caracteres');
+  }
+  
+  if (senha !== confirmacao) {
+    throw new Error('As senhas não coincidem');
+  }
+}
+
+/**
+ * Valida um email
+ * @param {string} email - Email a ser validado
+ * @throws {Error} Se o email for inválido
+ */
 function validarEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    throw new Error('Email inválido.');
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!regex.test(email)) {
+    throw new Error('Email inválido');
   }
-  return true;
 }
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-  // Verifica autenticação primeiro
-  checkUserLoggedIn();
+/**
+ * Valida um campo de formulário
+ * @param {HTMLElement} campo - Elemento do campo
+ * @param {boolean} condicao - Condição de validação
+ * @param {string} mensagem - Mensagem de erro
+ */
+function validarCampo(campo, condicao, mensagem) {
+  const feedback = campo.nextElementSibling;
   
-  // Aplica máscaras nos campos
-  aplicarMascaras();
+  if (!condicao) {
+    campo.classList.add('is-invalid');
+    if (feedback && feedback.classList.contains('invalid-feedback')) {
+      feedback.textContent = mensagem;
+    }
+  } else {
+    campo.classList.remove('is-invalid');
+    if (feedback && feedback.classList.contains('invalid-feedback')) {
+      feedback.textContent = '';
+    }
+  }
+}
+
+// ==============================================
+// Módulo de Busca de CEP
+// ==============================================
+
+/**
+ * Busca informações de endereço pelo CEP
+ * @param {string} cep - CEP a ser consultado
+ * @returns {Promise<Object>} Dados do endereço
+ * @throws {Error} Se o CEP for inválido ou não encontrado
+ */
+async function buscarEnderecoPorCep(cep) {
+  cep = cep.replace(/\D/g, '');
   
-  const form = getElement('#funcionarioForm');
-  const cepInput = document.getElementById('cep');
-  const btnBuscarCep = document.getElementById('buscarCep');
-
-  if (!form || !cepInput) return;
-
-  // Configura a data máxima para o campo de nascimento (18 anos atrás)
-  const dataNascInput = document.getElementById('dataNasc');
-  if (dataNascInput) {
-    const hoje = new Date();
-    const dataMinima = new Date(hoje.getFullYear() - 100, hoje.getMonth(), hoje.getDate());
-    const dataMaxima = new Date(hoje.getFullYear() - 18, hoje.getMonth(), hoje.getDate());
-    
-    dataNascInput.min = dataMinima.toISOString().split('T')[0];
-    dataNascInput.max = dataMaxima.toISOString().split('T')[0];
+  if (cep.length !== 8) {
+    throw new Error('CEP deve conter 8 dígitos');
   }
 
-  // Submissão do formulário
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    const btn = form.querySelector('.btn-cadastrar');
-    toggleButtonState(btn, true);
+  const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+  if (!response.ok) {
+    throw new Error('Erro ao buscar CEP');
+  }
 
-    // Valida todos os campos antes de enviar
-    if (!validateFormFields(form)) {
-      toggleButtonState(btn, false);
+  const dados = await response.json();
+  if (dados.erro) {
+    throw new Error('CEP não encontrado');
+  }
+
+  return dados;
+}
+
+// ==============================================
+// Módulo de Formulário
+// ==============================================
+
+/**
+ * Configura a validação em tempo real dos campos
+ */
+function setupValidacaoEmTempoReal() {
+  const nome = getElement('#nome');
+  const cpf = getElement('#cpf');
+  const telefone = getElement('#telefone');
+  const email = getElement('#email');
+  const dataNasc = getElement('#dataNasc');
+  const senha = getElement('#senha');
+  const confirmarSenha = getElement('#confirmarSenha');
+
+  // Validação do nome
+  if (nome) {
+    nome.addEventListener('input', () => {
+      nome.value = nome.value.replace(/[^A-Za-zÀ-ÿ\s]/g, '');
+      validarCampo(nome, nome.value.trim().length >= 3, 'Nome deve ter pelo menos 3 letras');
+    });
+  }
+
+  // Validação do CPF
+  if (cpf) {
+    cpf.addEventListener('input', () => {
+      try {
+        validarCPF(cpf.value);
+        validarCampo(cpf, true, '');
+      } catch (error) {
+        validarCampo(cpf, false, error.message);
+      }
+    });
+  }
+
+  // Validação do telefone
+  if (telefone) {
+    telefone.addEventListener('input', () => {
+      const valido = /^\(\d{2}\) \d{4,5}-\d{4}$/.test(telefone.value);
+      validarCampo(telefone, valido, 'Telefone inválido');
+    });
+  }
+
+  // Validação do email
+  if (email) {
+    email.addEventListener('input', () => {
+      try {
+        validarEmail(email.value);
+        validarCampo(email, true, '');
+      } catch (error) {
+        validarCampo(email, false, error.message);
+      }
+    });
+  }
+
+  // Validação da data de nascimento
+  if (dataNasc) {
+    dataNasc.addEventListener('change', () => {
+      const hoje = new Date();
+      const nascimento = new Date(dataNasc.value);
+      validarCampo(dataNasc, nascimento < hoje, 'Data inválida');
+    });
+  }
+
+  // Validação da senha
+  if (senha && confirmarSenha) {
+    confirmarSenha.addEventListener('input', () => {
+      try {
+        validarSenha(senha.value, confirmarSenha.value);
+        validarCampo(confirmarSenha, true, '');
+      } catch (error) {
+        validarCampo(confirmarSenha, false, error.message);
+      }
+    });
+  }
+}
+
+/**
+ * Configura a busca de CEP
+ */
+function setupBuscaCEP() {
+  const cep = getElement('#cep');
+  const btnBuscarCep = getElement('#buscarCep');
+  const uf = getElement('#uf');
+  const cidade = getElement('#cidade');
+  const bairro = getElement('#bairro');
+  const rua = getElement('#rua');
+
+  if (!cep) return;
+
+  const buscarCepHandler = async () => {
+    try {
+      const dados = await buscarEnderecoPorCep(cep.value);
+      
+      if (uf) uf.value = dados.uf || '';
+      if (cidade) cidade.value = dados.localidade || '';
+      if (bairro) bairro.value = dados.bairro || '';
+      if (rua) rua.value = dados.logradouro || '';
+      
+      validarCampo(cep, true, '');
+    } catch (error) {
+      validarCampo(cep, false, error.message);
+    }
+  };
+
+  cep.addEventListener('blur', buscarCepHandler);
+  if (btnBuscarCep) {
+    btnBuscarCep.addEventListener('click', buscarCepHandler);
+  }
+}
+
+/**
+ * Valida todos os campos do formulário
+ * @returns {boolean} True se todos os campos são válidos
+ */
+function validarFormulario() {
+  const camposObrigatorios = [
+    'nome', 'cpf', 'telefone', 'email', 'dataNasc', 
+    'tipoCadastro', 'nomeUsuario', 'senha', 'confirmarSenha',
+    'cep', 'uf', 'cidade', 'bairro', 'rua', 'numero'
+  ];
+
+  let valido = true;
+
+  camposObrigatorios.forEach(id => {
+    const campo = getElement(`#${id}`);
+    if (campo && !campo.value.trim()) {
+      validarCampo(campo, false, 'Campo obrigatório');
+      valido = false;
+    }
+  });
+
+  return valido;
+}
+
+// ==============================================
+// Módulo de Cadastro
+// ==============================================
+
+/**
+ * Cadastra um novo funcionário
+ * @param {Object} funcionario - Dados do funcionário
+ * @returns {Promise<Object>} Resposta da API
+ * @throws {Error} Em caso de falha no cadastro
+ */
+async function cadastrarFuncionario(funcionario) {
+  const response = await fetch(`${apiBaseUrl}/funcionario`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(funcionario)
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Erro ao cadastrar funcionário');
+  }
+
+  return await response.json();
+}
+
+/**
+ * Configura o evento de submit do formulário
+ */
+function setupFormSubmit() {
+  const form = getElement('#funcionarioForm');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btnSubmit = form.querySelector('.btn-cadastrar');
+    if (!btnSubmit) return;
+
+    // Valida o formulário
+    if (!validarFormulario()) {
       showMessage('Por favor, corrija os campos destacados', 'error');
       return;
     }
 
+    toggleButtonState(btnSubmit, true);
+
     try {
-      // Coleta os dados do formulário
+      // Prepara os dados do endereço
+      const endereco = {
+        cep: getElement('#cep').value.replace(/\D/g, ''),
+        ufSigla: getElement('#uf').value.trim().toUpperCase(),
+        cidadeNome: getElement('#cidade').value.trim(),
+        bairroNome: getElement('#bairro').value.trim(),
+        ruaNome: getElement('#rua').value.trim(),
+        numero: getElement('#numero').value.trim(),
+        complemento: getElement('#complemento').value.trim() || null
+      };
+
+      // Cadastra o endereço primeiro
+      const enderecoSalvo = await cadastrarEndereco(endereco);
+
+      // Prepara os dados do funcionário
       const funcionario = {
-        nome: form.nome.value.trim(),
-        cpf: form.cpf.value.replace(/\D/g, ''),
-        dataNasc: form.dataNasc.value,
-        telefone: form.telefone.value.replace(/\D/g, ''),
-        email: form.email.value.trim(),
-        tipoCadastroId: parseInt(form.tipoCadastro.value),
-        nomeUsuario: form.nomeUsuario.value.trim(),
-        senha: form.senha.value,
-        usuarioAtivo: form.usuarioAtivo.checked,
-        endereco: {
-          cep: form.cep.value.replace(/\D/g, ''),
-          ufSigla: form.uf.value.trim().toUpperCase(),
-          cidadeNome: form.cidade.value.trim(),
-          bairroNome: form.bairro.value.trim(),
-          ruaNome: form.rua.value.trim(),
-          numero: form.numero.value.trim(),
-          complemento: form.complemento.value.trim() || null
-        }
+        nome: getElement('#nome').value.trim(),
+        cpf: getElement('#cpf').value.replace(/\D/g, ''),
+        dataNasc: getElement('#dataNasc').value,
+        telefone: getElement('#telefone').value.replace(/\D/g, ''),
+        email: getElement('#email').value.trim(),
+        tipoCadastroId: parseInt(getElement('#tipoCadastro').value),
+        nomeUsuario: getElement('#nomeUsuario').value.trim(),
+        senha: getElement('#senha').value,
+        usuarioAtivo: getElement('#usuarioAtivo').checked,
+        enderecoId: enderecoSalvo.idEndereco
       };
 
-      console.log('Dados do funcionário a serem enviados:', funcionario);
+      // Cadastra o funcionário
+      await cadastrarFuncionario(funcionario);
 
-      // Primeiro cadastra o endereço
-      console.log('Iniciando cadastro do endereço...');
-      const endereco = await cadastrarEndereco(funcionario.endereco);
-      console.log('Endereço cadastrado com sucesso:', endereco);
-      
-      // Depois cadastra o funcionário com o ID do endereço
-      const { endereco: _, ...funcionarioSemEndereco } = funcionario;
-      const payload = {
-        ...funcionarioSemEndereco,
-        enderecoId: endereco.idEndereco
-      };
-      
-      console.log('Enviando dados do funcionário para a API:', payload);
-      
-      const res = await fetch(`${apiBaseUrl}/funcionario`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify(payload)
-      });
-
-      console.log('Resposta da API:', res.status, res.statusText);
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.error('Erro detalhado da API:', errorData);
-        throw new Error(errorData.message || 'Erro ao cadastrar funcionário');
-      }
-
-      const result = await res.json();
-      console.log('Funcionário cadastrado com sucesso:', result);
-
+      // Feedback de sucesso
       showMessage('Funcionário cadastrado com sucesso!', 'success');
       form.reset();
-      
-    } catch (err) {
-      console.error('Erro no cadastro:', err);
-      showMessage(`Erro: ${err.message}`, 'error');
+
+    } catch (error) {
+      console.error('Erro no cadastro:', error);
+      showMessage(`Erro: ${error.message}`, 'error');
     } finally {
-      toggleButtonState(btn, false);
+      toggleButtonState(btnSubmit, false);
     }
   });
+}
 
-  // Busca de CEP ao sair do campo
-  cepInput.addEventListener('blur', async () => {
-    const cep = cepInput.value.trim();
-    if (!cep) return;
+// ==============================================
+// Inicialização
+// ==============================================
 
-    try {
-      const dados = await buscarCep(cep);
-      form.uf.value = dados.uf || '';
-      form.cidade.value = dados.localidade || '';
-      form.bairro.value = dados.bairro || '';
-      form.rua.value = dados.logradouro || '';
-      
-      // Limpa qualquer erro anterior
-      cepInput.classList.remove('is-invalid');
-    } catch (err) {
-      console.error('Erro ao buscar CEP:', err.message);
-      cepInput.classList.add('is-invalid');
-      cepInput.nextElementSibling.textContent = err.message;
-    }
-  });
+/**
+ * Configura a data máxima para o campo de nascimento (18 anos atrás)
+ */
+function setupDataNascimento() {
+  const dataNascInput = getElement('#dataNasc');
+  if (!dataNascInput) return;
 
-  // Busca de CEP pelo botão
-  if (btnBuscarCep) {
-    btnBuscarCep.addEventListener('click', async () => {
-      const cep = cepInput.value.trim();
-      if (!cep) {
-        cepInput.classList.add('is-invalid');
-        cepInput.nextElementSibling.textContent = 'Digite um CEP para buscar';
-        cepInput.focus();
-        return;
-      }
+  const hoje = new Date();
+  const dataMinima = new Date(hoje.getFullYear() - 100, hoje.getMonth(), hoje.getDate());
+  const dataMaxima = new Date(hoje.getFullYear() - 18, hoje.getMonth(), hoje.getDate());
+  
+  dataNascInput.min = dataMinima.toISOString().split('T')[0];
+  dataNascInput.max = dataMaxima.toISOString().split('T')[0];
+}
 
-      try {
-        const dados = await buscarCep(cep);
-        form.uf.value = dados.uf || '';
-        form.cidade.value = dados.localidade || '';
-        form.bairro.value = dados.bairro || '';
-        form.rua.value = dados.logradouro || '';
-        
-        // Limpa qualquer erro anterior
-        cepInput.classList.remove('is-invalid');
-      } catch (err) {
-        console.error('Erro ao buscar CEP:', err.message);
-        cepInput.classList.add('is-invalid');
-        cepInput.nextElementSibling.textContent = err.message;
-      }
-    });
-  }
-
-  // Configura o logout se o botão existir
-  const logoutBtn = document.getElementById('btnLogout');
+/**
+ * Configura o botão de logout
+ */
+function setupLogout() {
+  const logoutBtn = getElement('#btnLogout');
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', function(e) {
+    logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
       performLogout();
     });
   }
+}
 
-  // Validação em tempo real para a confirmação de senha
-  const senhaField = document.getElementById('senha');
-  const confirmarSenhaField = document.getElementById('confirmarSenha');
+/**
+ * Inicializa a aplicação
+ */
+function init() {
+  // Verifica autenticação
+  checkUserLoggedIn();
   
-  if (senhaField && confirmarSenhaField) {
-    confirmarSenhaField.addEventListener('input', () => {
-      try {
-        validarSenha(senhaField.value, confirmarSenhaField.value);
-        confirmarSenhaField.classList.remove('is-invalid');
-      } catch (err) {
-        confirmarSenhaField.classList.add('is-invalid');
-        confirmarSenhaField.nextElementSibling.textContent = err.message;
-      }
-    });
-  }
-});
+  // Configurações iniciais
+  aplicarMascaras();
+  setupDataNascimento();
+  setupValidacaoEmTempoReal();
+  setupBuscaCEP();
+  setupFormSubmit();
+  setupLogout();
+}
+
+// Inicia quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', init);
