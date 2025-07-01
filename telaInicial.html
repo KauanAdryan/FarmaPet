@@ -75,16 +75,25 @@
           </div>
         </div>
         <div class="col-md-4 col-lg-3">
-          <div class="d-flex gap-2">
-            <select id="statusFilter" class="form-select" aria-label="Filtrar por status">
+          <div class="d-flex gap-2 align-items-center">
+            <select id="statusFilter" class="form-select flex-grow-1" aria-label="Filtrar por status">
               <option value="all">Todos os status</option>
               <option value="Ativo">Ativo</option>
               <option value="Inativo">Inativo</option>
             </select>
-            <button id="clearFilters" class="btn btn-outline-secondary" aria-label="Limpar filtros">
+
+            <select id="estoqueFilter" class="form-select flex-grow-1" aria-label="Filtrar por estoque">
+              <option value="all">Todos os estoques</option>
+              <option value="com">Com estoque</option>
+              <option value="sem">Sem estoque</option>
+            </select>
+
+            <button id="clearFilters" class="btn btn-outline-secondary btn-sm" aria-label="Limpar filtros"
+              style="width: 40px;">
               <i class="fas fa-times"></i>
             </button>
           </div>
+
         </div>
       </div>
     </section>

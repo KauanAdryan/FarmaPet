@@ -124,7 +124,9 @@ function setupEventListeners() {
   const searchButton = getElement('#searchButton');
   const statusFilter = getElement('#statusFilter');
   const clearFilters = getElement('#clearFilters');
+  const estoqueFilter = getElement('#estoqueFilter');
 
+  if (estoqueFilter) estoqueFilter.addEventListener('change', handleFilterChange);
   if (searchInput) searchInput.addEventListener('input', handleFilterChange);
   if (searchButton) searchButton.addEventListener('click', handleFilterChange);
   if (statusFilter) statusFilter.addEventListener('change', handleFilterChange);
@@ -290,31 +292,52 @@ function renderMedicamentos(lista) {
 function handleFilterChange() {
   const searchInput = getElement('#searchInput');
   const statusFilter = getElement('#statusFilter');
+  const estoqueFilter = getElement('#estoqueFilter');
 
   const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
   const statusValue = statusFilter ? statusFilter.value : 'all';
+  const estoqueValue = estoqueFilter ? estoqueFilter.value : 'all';
 
   const filtered = medicamentosLista.filter(med => {
+    // Filtra por busca de texto
     const matchesSearch =
       (med.nome && med.nome.toLowerCase().includes(searchTerm)) ||
       (med.principioAtivo && med.principioAtivo.toLowerCase().includes(searchTerm)) ||
       (med.especieIndicada && med.especieIndicada.toLowerCase().includes(searchTerm));
 
+    // Filtra por status ativo/inativo
     const matchesStatus = statusValue === 'all' || med.medicamentoativo === statusValue;
-    return matchesSearch && matchesStatus;
+
+    // Filtra por estoque: 
+    // 'com' = quantidadeEstoque > 0
+    // 'sem' = quantidadeEstoque === 0 ou undefined/null
+    let matchesEstoque = true;
+    if (estoqueValue === 'com') {
+      matchesEstoque = med.quantidadeEstoque > 0;
+    } else if (estoqueValue === 'sem') {
+      matchesEstoque = !med.quantidadeEstoque || med.quantidadeEstoque === 0;
+    }
+
+    return matchesSearch && matchesStatus && matchesEstoque;
   });
 
   renderMedicamentos(filtered);
 }
 
+
+
 function resetFilters() {
   const searchInput = getElement('#searchInput');
   const statusFilter = getElement('#statusFilter');
+  const estoqueFilter = getElement('#estoqueFilter'); // novo
 
   if (searchInput) searchInput.value = '';
   if (statusFilter) statusFilter.value = 'all';
+  if (estoqueFilter) estoqueFilter.value = 'all'; // limpa estoque também
+
   handleFilterChange();
 }
+
 
 function showMedicamentoDetails(med) {
   const modal = getElement('#medicamentoModal');
