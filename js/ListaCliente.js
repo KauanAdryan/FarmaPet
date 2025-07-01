@@ -128,32 +128,28 @@ function renderTopCidades(cidadesData) {
 function renderMapaCalor(cidadesData) {
   if (!clientesMap) return;
 
-  // Coordenadas aproximadas das capitais brasileiras (simplificado)
   const coordenadasCapitais = {
     'São Paulo': [-23.5505, -46.6333],
     'Rio de Janeiro': [-22.9068, -43.1729],
     'Belo Horizonte': [-19.9167, -43.9345],
-    'Blumenau': [-26.9151, -49.0707], // Exemplo, ajustado para Blumenau
-    // Adicione mais cidades aqui conforme necessário
+    'Blumenau': [-26.9151, -49.0707],
+    // Adicione mais cidades conforme necessidade
   };
 
-  // Prepara os pontos para o mapa de calor: só lat, lon, com intensidade fixa (ex: 0.5)
   const pontosCalor = cidadesData
-    .map(cidadeStr => {
-      // cidadesData parece ser um array de strings "Cidade/UF" (ex: "Blumenau/SC")
-      // Extrai o nome da cidade (antes da barra)
-      const nomeCidade = cidadeStr.split('/')[0].trim();
+    .map(obj => {
+      const nomeCidade = obj.cidade;
+      const qtd = obj.quantidade || 1;
 
       if (coordenadasCapitais[nomeCidade]) {
         const coord = coordenadasCapitais[nomeCidade];
-        // Intensidade fixa (exemplo 0.5)
-        return [...coord, 0.5];
+        const intensidade = Math.min(qtd / 10, 1); // escala de 0.1 a 1.0
+        return [...coord, intensidade];
       }
       return null;
     })
-    .filter(ponto => ponto !== null);
+    .filter(p => p !== null);
 
-  // Limpa camadas antigas antes de adicionar (importante para não sobrepor)
   if (window.currentHeatLayer) {
     clientesMap.removeLayer(window.currentHeatLayer);
   }
@@ -166,6 +162,7 @@ function renderMapaCalor(cidadesData) {
     }).addTo(clientesMap);
   }
 }
+
 
 // === Inicializa instâncias Bootstrap Modal ===
 function initModals() {
