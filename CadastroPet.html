@@ -15,11 +15,13 @@
     <div class="d-flex align-items-center gap-3">
       <a href="telaInicial.html" class="home-icon">🏠</a>
 
+      <!-- Menu Cadastros -->
       <div class="dropdown">
-        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownCadastros" data-bs-toggle="dropdown">
+        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownCadastros"
+          data-bs-toggle="dropdown" aria-expanded="false">
           Cadastros
         </button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" aria-labelledby="dropdownCadastros">
           <li><a class="dropdown-item" href="CadastroCliente.html">Cadastro Cliente</a></li>
           <li><a class="dropdown-item" href="CadastroRemedio.html">Cadastro Remédio</a></li>
           <li><a class="dropdown-item" href="CadastroPet.html">Cadastro Pet</a></li>
@@ -27,23 +29,28 @@
         </ul>
       </div>
 
+      <!-- Menu Listas -->
       <div class="dropdown">
-        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownListas" data-bs-toggle="dropdown">
+        <button class="btn btn-custom-primary dropdown-toggle" type="button" id="dropdownListas"
+          data-bs-toggle="dropdown" aria-expanded="false">
           Listas
         </button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" aria-labelledby="dropdownListas">
           <li><a class="dropdown-item" href="ListarCliente.html">Listar Cliente</a></li>
           <li><a class="dropdown-item" href="ListarFuncionario.html">Listar Funcionário</a></li>
         </ul>
       </div>
     </div>
 
+    <!-- Substitua o botão do ícone de usuário por este código -->
     <div class="dropdown">
-      <button class="user-icon btn p-0 dropdown-toggle" type="button" id="dropdownUsuario" data-bs-toggle="dropdown">
+      <button class="user-icon btn p-0 dropdown-toggle" type="button" id="dropdownUsuario" data-bs-toggle="dropdown"
+        aria-expanded="false" aria-label="Perfil do Usuário">
         👤
       </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item text-danger" href="login.html" id="btnLogout">Sair</a></li>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUsuario">
+        <li><a class="dropdown-item text-danger" href="login.html" id="btnLogout"><i
+              class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
       </ul>
     </div>
   </header>

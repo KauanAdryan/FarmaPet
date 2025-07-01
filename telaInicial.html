@@ -49,15 +49,17 @@
       </div>
     </div>
 
-<!-- Substitua o botão do ícone de usuário por este código -->
-<div class="dropdown">
-  <button class="user-icon btn p-0 dropdown-toggle" type="button" id="dropdownUsuario" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Perfil do Usuário">
-    👤
-  </button>
-  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUsuario">
-    <li><a class="dropdown-item text-danger" href="login.html" id="btnLogout"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
-  </ul>
-</div>
+    <!-- Substitua o botão do ícone de usuário por este código -->
+    <div class="dropdown">
+      <button class="user-icon btn p-0 dropdown-toggle" type="button" id="dropdownUsuario" data-bs-toggle="dropdown"
+        aria-expanded="false" aria-label="Perfil do Usuário">
+        👤
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUsuario">
+        <li><a class="dropdown-item text-danger" href="login.html" id="btnLogout"><i
+              class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+      </ul>
+    </div>
   </header>
 
   <main class="container-fluid my-3">
@@ -87,8 +89,12 @@
       </div>
     </section>
 
-    <section class="medicamentos-grid">
-      <div id="gridMedicamentos" class="row g-4" role="grid" aria-label="Lista de medicamentos"></div>
+    <section class="container my-4">
+      <h2 class="visually-hidden">Lista de medicamentos</h2>
+      <div id="gridMedicamentos" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" role="grid"
+        aria-label="Lista de medicamentos">
+        <!-- Os cards de medicamentos serão inseridos aqui -->
+      </div>
     </section>
 
     <div class="fixed-buttons">

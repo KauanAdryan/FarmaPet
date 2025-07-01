@@ -276,22 +276,37 @@ function createClienteCard(cliente) {
   card.innerHTML = `
     <div class="card-body d-flex flex-column">
       <div class="d-flex align-items-center mb-3">
-        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px; font-weight: bold;">
+        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3 shadow-sm" 
+             style="width: 48px; height: 48px; font-weight: bold; font-size: 1.1rem;">
           ${firstLetter}
         </div>
         <div>
-          <h5 class="card-title mb-0">${nome}</h5>
+          <h5 class="card-title mb-0 text-truncate" title="${nome}">${nome}</h5>
         </div>
       </div>
-      <div class="mb-2">
-        <p class="mb-1"><strong>Email:</strong> ${email}</p>
+
+      <div class="mb-3 small text-muted">
+        <p class="mb-1" title="${email}"><strong>Email:</strong> ${email}</p>
         <p class="mb-0"><strong>Telefone:</strong> ${telefone}</p>
       </div>
-      <div class="mt-auto text-end">
-        <button type="button" class="btn btn-sm btn-outline-primary btn-edit">Editar</button>
-      </div>
-    </div>`;
 
+      <div class="mt-auto d-flex justify-content-center gap-2 pt-3">
+
+        <button type="button" 
+                class="btn btn-sm btn-outline-secondary w-100 me-1 btn-detalhes" 
+                title="Ver detalhes do cliente" 
+                aria-label="Ver detalhes de ${nome}">
+          <i class="fas fa-eye me-1"></i> Detalhes
+        </button>
+        <button type="button" 
+                class="btn btn-sm btn-outline-primary w-100 ms-1 btn-edit" 
+                title="Editar cliente" 
+                aria-label="Editar ${nome}">
+          <i class="fas fa-edit me-1"></i> Editar
+        </button>
+      </div>
+    </div>
+  `;
   // Botão editar abre modal de edição
   card.querySelector('.btn-edit')?.addEventListener('click', e => {
     e.stopPropagation();
@@ -348,13 +363,17 @@ function showClienteDetails(cliente) {
         <p class="mb-0"><strong>Nascimento:</strong> ${formatDate(pet.idade)}</p>
       </div>
       <div class="d-flex flex-column gap-2 mt-2 mt-md-0">
-        <button class="btn btn-sm btn-outline-primary" title="Ver detalhes do pet">
-          <i class="fas fa-eye me-1"></i> Ver detalhes
-        </button>
-        <button class="btn btn-sm btn-outline-danger" title="Remover pet">
-          <i class="fas fa-trash-alt me-1"></i> Remover
-        </button>
-      </div>
+  <button class="btn btn-sm btn-outline-primary" title="Ver detalhes do pet">
+    <i class="fas fa-eye me-1"></i> Ver detalhes
+  </button>
+  <button class="btn btn-sm btn-outline-success" title="Editar pet">
+    <i class="fas fa-edit me-1"></i> Editar
+  </button>
+  <button class="btn btn-sm btn-outline-danger" title="Remover pet">
+    <i class="fas fa-trash-alt me-1"></i> Remover
+  </button>
+</div>
+
     `;
 
       const btnDetalhes = petDiv.querySelector('button.btn-outline-primary');
@@ -605,4 +624,104 @@ async function removerPetDoCliente(petId) {
   } catch (error) {
     showMessage(error.message, 'error');
   }
+}
+
+// === VARIÁVEL GLOBAL DO MODAL DE EDIÇÃO DE PET ===
+let editPetModalInstance = null;
+
+// === INICIALIZAÇÃO DE MODAIS ===
+function initModals() {
+  const clienteModalEl = document.getElementById('clienteModal');
+  const editClienteModalEl = document.getElementById('editClienteModal');
+  const editPetModalEl = document.getElementById('editPetModal');
+
+  if (clienteModalEl) currentModalInstance = new bootstrap.Modal(clienteModalEl);
+  if (editClienteModalEl) editModalInstance = new bootstrap.Modal(editClienteModalEl);
+  if (editPetModalEl) editPetModalInstance = new bootstrap.Modal(editPetModalEl);
+}
+
+// === ABRIR MODAL DE EDIÇÃO DE PET ===
+function abrirModalEditarPet(pet) {
+  const form = document.getElementById('formEditarPet');
+  if (!form || !editPetModalInstance) return;
+
+  form.querySelector('#editPetId').value = pet.id;
+  form.querySelector('#editPetNome').value = pet.nome || '';
+  form.querySelector('#editPetRaca').value = pet.raca || '';
+  form.querySelector('#editPetEspecie').value = pet.especie || '';
+
+  const dataNasc = pet.idade?.substring(0, 10) || '';
+  form.querySelector('#editPetNascimento').value = dataNasc;
+
+  form.querySelector('#editPetPeso').value = pet.peso || '';
+
+  editPetModalInstance.show();
+}
+
+// === VALIDAR E ENVIAR EDIÇÃO DE PET ===
+async function salvarEdicaoPet() {
+  const form = document.getElementById('formEditarPet');
+
+  const id = form.querySelector('#editPetId').value;
+  const nome = form.querySelector('#editPetNome').value.trim();
+  const raca = form.querySelector('#editPetRaca').value.trim();
+  const especie = form.querySelector('#editPetEspecie').value.trim();
+  const nascimento = form.querySelector('#editPetNascimento').value;
+  const peso = form.querySelector('#editPetPeso').value;
+
+  if (!nome || nome.length < 2) {
+    showMessage('Nome do pet deve ter ao menos 2 caracteres', 'error');
+    return;
+  }
+
+  if (!nascimento) {
+    showMessage('Data de nascimento é obrigatória', 'error');
+    return;
+  }
+
+  const nascimentoDate = new Date(nascimento);
+  if (isNaN(nascimentoDate.getTime())) {
+    showMessage('Data de nascimento inválida', 'error');
+    return;
+  }
+
+  if (peso && (isNaN(peso) || parseFloat(peso) < 0)) {
+    showMessage('Peso deve ser um número positivo', 'error');
+    return;
+  }
+
+  const petAtualizado = {
+    nome,
+    raca,
+    especie,
+    idade: nascimento,
+    peso: peso ? parseFloat(peso) : null
+  };
+
+  try {
+    const res = await fetch(`${apiBaseUrl}/animal/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(petAtualizado),
+      credentials: 'include'
+    });
+
+    if (!res.ok) throw new Error('Erro ao atualizar pet.');
+
+    showMessage('Pet atualizado com sucesso!', 'success');
+    editPetModalInstance.hide();
+    await getClientes();
+  } catch (error) {
+    console.error(error);
+    showMessage(error.message || 'Erro ao atualizar pet', 'error');
+  }
+}
+
+// === EVENTO DE SUBMISSÃO ===
+function setupEventListeners() {
+  const formEditarPet = document.getElementById('formEditarPet');
+  formEditarPet?.addEventListener('submit', e => {
+    e.preventDefault();
+    salvarEdicaoPet();
+  });
 }

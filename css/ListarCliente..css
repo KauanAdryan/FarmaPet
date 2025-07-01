@@ -149,6 +149,35 @@ header {
   margin: 4px 0;
 }
 
+
+.client-card .btn {
+  min-width: 100px;
+  font-size: 0.875rem;
+  padding: 0.4rem 0.75rem;
+}
+
+.client-card .btn i {
+  font-size: 0.85rem;
+}
+
+.client-card .card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.client-card p {
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  color: #555;
+}
+
+.client-card .rounded-circle {
+  font-size: 1rem;
+  width: 42px;
+  height: 42px;
+}
+
 /* ======== ÍCONE DE USUÁRIO ======== */
 .user-icon {
   width: 40px;

@@ -3,6 +3,7 @@ body {
   font-family: 'Poppins', sans-serif;
   background-color: #f9f9f9;
   color: #333;
+  padding: 35px;
 }
 
 /* Variáveis CSS para cores principais */
@@ -69,7 +70,6 @@ body {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: none;
-  animation: fadeIn 0.3s ease-in-out;
   padding: 8px 0;
   margin-top: 10px;
 }
@@ -363,7 +363,6 @@ body {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: none;
-  animation: fadeIn 0.3s ease-in-out;
   padding: 8px 0;
   margin-top: 10px;
 }
@@ -386,11 +385,6 @@ body {
   text-align: center;
 }
 
-/* Animação fadeIn do dropdown */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
 /* Ícone Usuário */
 .user-icon {
